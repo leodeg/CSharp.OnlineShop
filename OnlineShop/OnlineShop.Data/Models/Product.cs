@@ -29,12 +29,13 @@ namespace OnlineShop.Data.Models
 		[Required]
 		public int Quantity { get; set; }
 
+		public bool SoftDeleted { get; set; }
 
 		[Required]
-		[DataType(DataType.DateTime)]
+		[DataType(DataType.Date)]
 		public DateTime Created { get; set; }
 
-		[DataType(DataType.DateTime)]
+		[DataType(DataType.Date)]
 		public DateTime Updated { get; set; }
 
 

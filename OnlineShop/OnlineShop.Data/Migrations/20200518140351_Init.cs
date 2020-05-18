@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace OnlineShop.Data.Migrations
 {
-    public partial class InitializeDatabase : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -18,21 +18,6 @@ namespace OnlineShop.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Promotions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Created = table.Column<DateTime>(nullable: false),
-                    NewPrice = table.Column<double>(nullable: false),
-                    Message = table.Column<string>(maxLength: 100, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Promotions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -62,12 +47,13 @@ namespace OnlineShop.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(maxLength: 100, nullable: false),
-                    Price = table.Column<double>(nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
                     Description = table.Column<string>(nullable: false),
                     ShortDescription = table.Column<string>(nullable: false),
-                    ImageUrl = table.Column<string>(nullable: true),
+                    ImageUrl = table.Column<string>(unicode: false, nullable: true),
                     Quantity = table.Column<int>(nullable: false),
-                    Created = table.Column<DateTime>(nullable: false),
+                    SoftDeleted = table.Column<bool>(nullable: false),
+                    Created = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     Updated = table.Column<DateTime>(nullable: false),
                     PromotionId = table.Column<int>(nullable: false),
                     CategoryId = table.Column<int>(nullable: false),
@@ -82,16 +68,32 @@ namespace OnlineShop.Data.Migrations
                         principalTable: "Categories",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Products_Promotions_PromotionId",
-                        column: x => x.PromotionId,
-                        principalTable: "Promotions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Products_Subcategories_SubcategoryId",
                         column: x => x.SubcategoryId,
                         principalTable: "Subcategories",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Promotions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Created = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    PriceOffer = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
+                    Message = table.Column<string>(maxLength: 200, nullable: true),
+                    ProductId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Promotions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Promotions_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -100,14 +102,15 @@ namespace OnlineShop.Data.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_PromotionId",
-                table: "Products",
-                column: "PromotionId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Products_SubcategoryId",
                 table: "Products",
                 column: "SubcategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Promotions_ProductId",
+                table: "Promotions",
+                column: "ProductId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Subcategories_CategoryId",
@@ -118,10 +121,10 @@ namespace OnlineShop.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Promotions");
 
             migrationBuilder.DropTable(
-                name: "Promotions");
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "Subcategories");

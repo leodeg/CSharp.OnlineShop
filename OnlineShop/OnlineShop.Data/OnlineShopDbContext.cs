@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using OnlineShop.Data.Configurations;
 using OnlineShop.Data.Models;
 
 namespace OnlineShop.Data
@@ -15,25 +16,8 @@ namespace OnlineShop.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<Product>()
-				.HasOne(e => e.Subcategory)
-				.WithMany()
-				.HasForeignKey(nameof(Product.SubcategoryId))
-				.OnDelete(DeleteBehavior.NoAction);
-
-			modelBuilder.Entity<Product>()
-				.HasOne(e => e.Category)
-				.WithMany()
-				.HasForeignKey(nameof(Product.CategoryId))
-				.OnDelete(DeleteBehavior.NoAction);
-
-			modelBuilder.Entity<Product>()
-				.Property(e => e.Created)
-				.HasDefaultValueSql("getdate()");
-
-			modelBuilder.Entity<Product>()
-				.Property(e => e.Updated)
-				.ValueGeneratedOnAddOrUpdate();
+			modelBuilder.ApplyConfiguration(new ProductConfig());
+			modelBuilder.ApplyConfiguration(new PromotionConfig());
 		}
 
 		public DbSet<Promotion> Promotions { get; set; }

@@ -11,6 +11,6 @@ namespace OnlineShop.Data.Models
 		[MaxLength(100)]
 		public string Title { get; set; }
 
-		public IEnumerable<Subcategory> Subcategories { get; set; }
+		public IEnumerable<Category> Subcategories { get; set; }
 	}
 }

@@ -7,7 +7,7 @@ using OnlineShop.Data.Models;
 
 namespace OnlineShop.Data.Configurations
 {
-	class ProductConfig : IEntityTypeConfiguration<Product>
+	internal class ProductConfig : IEntityTypeConfiguration<Product>
 	{
 		public void Configure(EntityTypeBuilder<Product> builder)
 		{

@@ -7,7 +7,7 @@ using OnlineShop.Data.Models;
 
 namespace OnlineShop.Data.Configurations
 {
-	class PromotionConfig : IEntityTypeConfiguration<Promotion>
+	internal class PromotionConfig : IEntityTypeConfiguration<Promotion>
 	{
 		public void Configure(EntityTypeBuilder<Promotion> builder)
 		{

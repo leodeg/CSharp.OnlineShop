@@ -12,6 +12,8 @@ using OnlineShop.Web.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OnlineShop.Data.Repositories;
+using OnlineShop.Data.Models;
 
 namespace OnlineShop.Web
 {
@@ -38,6 +40,10 @@ namespace OnlineShop.Web
 			services.AddDefaultIdentity<IdentityUser>
 					(options => options.SignIn.RequireConfirmedAccount = true)
 				.AddEntityFrameworkStores<ApplicationDbContext>();
+
+			services.AddTransient<ICategoryRepository, CategoryRepository>();
+			services.AddTransient<ISubcategoryRepository, SubcategoryRepository>();
+			services.AddTransient<IProductRepository, ProductRepository>();
 
 			services.AddControllersWithViews();
 			services.AddRazorPages();

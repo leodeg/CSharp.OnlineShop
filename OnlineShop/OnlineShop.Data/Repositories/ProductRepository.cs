@@ -15,6 +15,11 @@ namespace OnlineShop.Data.Repositories
 		{
 		}
 
+		public IEnumerable<Product> GetWithPriceOffers ()
+		{
+			return dbSet.AsNoTracking().Where(e => e.PromotionId > 0).ToList();
+		}
+
 		public override void Update(int id, Product entity)
 		{
 			if (entity == null)

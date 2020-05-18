@@ -44,11 +44,11 @@ namespace OnlineShop.Web
 
 			services.AddTransient<ICategoryRepository, CategoryRepository>();
 			services.AddTransient<ISubcategoryRepository, SubcategoryRepository>();
-
 			services.AddTransient<IProductRepository, ProductRepository>();
 
 			services.AddTransient<ICategoriesService, CategoriesService>();
 			services.AddTransient<ISubcategoriesService, SubcategoriesService>();
+			services.AddTransient<IProductsService, ProductsService>();
 
 			services.AddControllersWithViews();
 			services.AddRazorPages();

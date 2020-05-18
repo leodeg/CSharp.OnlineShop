@@ -25,9 +25,12 @@ namespace OnlineShop.Data.Repositories
 				throw new InvalidOperationException($"Can't find subcategory with {id} id");
 
 			subcategory.Title = entity.Title;
+			subcategory.CategoryId = entity.CategoryId;
+		}
 
-			if (subcategory.CategoryId != entity.CategoryId)
-				subcategory.CategoryId = entity.CategoryId;
+		public IEnumerable<Subcategory> GetByCategoryId(int categoryId)
+		{
+			return dbSet.AsNoTracking().Where(e => e.CategoryId == categoryId).ToList();
 		}
 	}
 }

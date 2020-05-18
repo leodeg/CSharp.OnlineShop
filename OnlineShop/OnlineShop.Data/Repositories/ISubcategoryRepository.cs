@@ -11,6 +11,6 @@ namespace OnlineShop.Data.Repositories
 {
 	public interface ISubcategoryRepository : IRepository<Subcategory>
 	{
-
+		IEnumerable<Subcategory> GetByCategoryId(int categoryId);
 	}
 }

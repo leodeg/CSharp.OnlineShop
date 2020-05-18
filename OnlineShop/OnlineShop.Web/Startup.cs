@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OnlineShop.Data.Repositories;
 using OnlineShop.Data.Models;
+using OnlineShop.Services.AdminServices;
 
 namespace OnlineShop.Web
 {
@@ -43,7 +44,11 @@ namespace OnlineShop.Web
 
 			services.AddTransient<ICategoryRepository, CategoryRepository>();
 			services.AddTransient<ISubcategoryRepository, SubcategoryRepository>();
+
 			services.AddTransient<IProductRepository, ProductRepository>();
+
+			services.AddTransient<ICategoriesService, CategoriesService>();
+			services.AddTransient<ISubcategoriesService, SubcategoriesService>();
 
 			services.AddControllersWithViews();
 			services.AddRazorPages();

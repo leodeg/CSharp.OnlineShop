@@ -8,6 +8,7 @@ namespace OnlineShop.Data.Models
 {
 	public class Subcategory : Model
 	{
+		[Required]
 		[MaxLength(100)]
 		public string Title { get; set; }
 

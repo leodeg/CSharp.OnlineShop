@@ -47,7 +47,7 @@ namespace OnlineShop.Data.Repositories
 			context.Entry(entity).State = EntityState.Modified;
 		}
 
-		public void Remove(int id)
+		public virtual void Remove(int id)
 		{
 			var entity = dbSet.Find(id);
 			if (entity != null)

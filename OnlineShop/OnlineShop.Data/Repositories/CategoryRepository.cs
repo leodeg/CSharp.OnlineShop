@@ -26,5 +26,18 @@ namespace OnlineShop.Data.Repositories
 
 			category.Title = entity.Title;
 		}
+
+		public override void Remove(Category entity)
+		{
+			dbSet.Remove(entity);
+		}
+
+		public override void Remove(int id)
+		{
+			Category category = dbSet.Include(e => e.Subcategories).FirstOrDefault(e => e.Id == id);
+			if (category == null)
+				throw new InvalidOperationException($"Can't find category with {id} id");
+			dbSet.Remove(category);
+		}
 	}
 }

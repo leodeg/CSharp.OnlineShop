@@ -22,6 +22,9 @@ namespace OnlineShop.Web.Controllers.Api
 		[HttpGet]
 		public IActionResult Get(int? categoryId)
 		{
+			if (categoryId == null)
+				return BadRequest();
+
 			return new ObjectResult(subcategoriesService.GetByCategoryId(categoryId.Value));
 		}
 	}

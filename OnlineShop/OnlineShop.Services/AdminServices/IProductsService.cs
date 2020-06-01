@@ -9,5 +9,6 @@ namespace OnlineShop.Services.AdminServices
 		IEnumerable<Product> GetProducts();
 		void Remove(int id);
 		void Save(Product product);
+		IEnumerable<Product> GetWithSubcategory();
 	}
 }

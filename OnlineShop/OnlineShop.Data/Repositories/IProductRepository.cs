@@ -11,6 +11,8 @@ namespace OnlineShop.Data.Repositories
 {
 	public interface IProductRepository : IRepository<Product>
 	{
+		IEnumerable<Product> GetWithPriceOffers();
+		IEnumerable<Product> GetWithSubcategory();
 		void UpdateQuantity(int productId, int quantity);
 		void UpdateImageUrl(int productId, string imageUrl);
 		void UpdatePriceOffer(Promotion priceOffer);

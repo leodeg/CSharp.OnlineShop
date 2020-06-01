@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineShop.Data;
 
 namespace OnlineShop.Data.Migrations
 {
     [DbContext(typeof(OnlineShopDbContext))]
-    partial class OnlineShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200601205037_FixQueryFilterForProductEntity")]
+    partial class FixQueryFilterForProductEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,7 +168,7 @@ namespace OnlineShop.Data.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("OnlineShop.Data.Models.Subcategory", "Subcategory")
+                    b.HasOne("OnlineShop.Data.Models.Category", "Subcategory")
                         .WithMany()
                         .HasForeignKey("SubcategoryId")
                         .OnDelete(DeleteBehavior.NoAction)

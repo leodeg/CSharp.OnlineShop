@@ -2,40 +2,57 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Data.Models;
 using OnlineShop.Data.Repositories;
 using OnlineShop.Services.AdminServices;
+using OnlineShop.Web.Models.ViewModels;
 
 namespace OnlineShop.Web.Controllers
 {
 	public class AdminProductsController : Controller
 	{
 		private readonly IProductsService productsService;
+		private readonly ICategoriesService categoriesService;
 		private const string ProductForm = "ProductForm";
 
 
-		public AdminProductsController(IProductsService productsService)
+		public AdminProductsController(IProductsService productsService, ICategoriesService categoriesService)
 		{
 			this.productsService = productsService;
+			this.categoriesService = categoriesService;
 		}
 
 		public IActionResult Index()
 		{
-			return View();
+			return View(productsService.GetWithSubcategory());
+		}
+
+		public IActionResult Details(int? id)
+		{
+			return View(productsService.GetById(id.Value));
 		}
 
 		public IActionResult Create()
 		{
-			return View(ProductForm, new Product());
+			return View(ProductForm, new ProductFormVM()
+			{
+				Product = new Product(),
+				Categories = categoriesService.GetCategories()
+			});
 		}
 
 		public IActionResult Edit(int? id)
 		{
-			return View(ProductForm, productsService.GetById(id.Value));
+			return View(ProductForm, new ProductFormVM()
+			{
+				Product = productsService.GetById(id.Value),
+				Categories = categoriesService.GetCategories()
+			});
 		}
 
-		public IActionResult Save(Product product)
+		public IActionResult Save(Product product, IFormFile image)
 		{
 			if (!ModelState.IsValid)
 				return View(ProductForm, product);

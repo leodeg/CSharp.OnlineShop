@@ -39,8 +39,6 @@ namespace OnlineShop.Data.Models
 		public DateTime Updated { get; set; }
 
 
-		[ForeignKey(nameof(Promotion))]
-		public int? PromotionId { get; set; }
 		public Promotion Promotion { get; set; }
 
 		[Required]
@@ -51,6 +49,6 @@ namespace OnlineShop.Data.Models
 		[Required]
 		[ForeignKey(nameof(Subcategory))]
 		public int SubcategoryId { get; set; }
-		public Category Subcategory { get; set; }
+		public Subcategory Subcategory { get; set; }
 	}
 }

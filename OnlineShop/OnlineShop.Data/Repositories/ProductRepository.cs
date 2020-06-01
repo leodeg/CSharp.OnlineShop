@@ -15,9 +15,14 @@ namespace OnlineShop.Data.Repositories
 		{
 		}
 
-		public IEnumerable<Product> GetWithPriceOffers ()
+		public IEnumerable<Product> GetWithPriceOffers()
 		{
-			return dbSet.AsNoTracking().Where(e => e.PromotionId > 0).ToList();
+			return dbSet.AsNoTracking().Include(e => e.Promotion).ToList();
+		}
+
+		public IEnumerable<Product> GetWithSubcategory()
+		{
+			return dbSet.AsNoTracking().Include(e => e.Subcategory).ToList();
 		}
 
 		public override void Update(int id, Product entity)
@@ -35,11 +40,14 @@ namespace OnlineShop.Data.Repositories
 			product.ShortDescription = entity.ShortDescription;
 			product.Quantity = entity.Quantity;
 
-			if (entity.ImageUrl.Length > 0 && !product.ImageUrl.Equals(entity.ImageUrl))
+			if (entity.ImageUrl != null
+				&& entity.ImageUrl.Length > 0
+				&& !product.ImageUrl.Equals(entity.ImageUrl))
 				product.ImageUrl = entity.ImageUrl;
 
-			UpdatePriceOffer(entity.Promotion);
-			UpdateCategoryAndSubcategory(id, entity.SubcategoryId);
+			if (entity.CategoryId != product.CategoryId 
+				|| entity.SubcategoryId != product.SubcategoryId)
+				UpdateCategoryAndSubcategory(id, entity.SubcategoryId);
 		}
 
 		public void UpdateQuantity(int productId, int quantity)
@@ -98,7 +106,7 @@ namespace OnlineShop.Data.Repositories
 			product.SoftDeleted = true;
 		}
 
-		public void RestoreRemovedSoft (int productId)
+		public void RestoreRemovedSoft(int productId)
 		{
 			Product product = dbSet.FirstOrDefault(e => e.Id == productId);
 			product.SoftDeleted = false;

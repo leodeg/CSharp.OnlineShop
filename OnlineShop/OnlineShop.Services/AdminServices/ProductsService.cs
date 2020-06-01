@@ -25,6 +25,11 @@ namespace OnlineShop.Services.AdminServices
 			return productRepository.Get();
 		}
 
+		public IEnumerable<Product> GetWithSubcategory ()
+		{
+			return productRepository.GetWithSubcategory();
+		}
+
 		public void Save(Product product)
 		{
 			if (product.Id == 0)

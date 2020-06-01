@@ -1,0 +1,53 @@
+﻿@model IEnumerable<OnlineShop.Data.Models.Product>
+
+@{
+	ViewData["Title"] = "Admin Product Table";
+}
+
+<h1 class="text-center">Products Table</h1>
+<hr />
+
+<div class="row">
+	<p>
+		<a asp-action="Create" class="btn btn-primary mr-3">Create New</a>
+	</p>
+	<p>
+		<a asp-controller="AdminCategories" asp-action="Index" class="btn btn-primary mr-3">Categories List</a>
+	</p>
+	<p class="btn btn-success btn-">
+		Products count: @Model.Count()
+	</p>
+</div>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>@Html.DisplayNameFor(model => model.Title)</th>
+			<th>@Html.DisplayNameFor(model => model.Price)</th>
+			<th>@Html.DisplayNameFor(model => model.Quantity)</th>
+			<th>@Html.DisplayNameFor(model => model.Subcategory)</th>
+			<th>@Html.DisplayNameFor(model => model.SoftDeleted)</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		@if (Model != null && Model.Any())
+		{
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@Html.DisplayFor(modelItem => item.Title)</td>
+					<td>@Html.DisplayFor(modelItem => item.Price)</td>
+					<td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+					<td>@Html.DisplayFor(modelItem => item.Subcategory.Title)</td>
+					<td>@Html.DisplayFor(modelItem => item.SoftDeleted)</td>
+					<td>
+						<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
+						<a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a>
+						<a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+					</td>
+				</tr>
+			}
+		}
+	</tbody>
+</table>

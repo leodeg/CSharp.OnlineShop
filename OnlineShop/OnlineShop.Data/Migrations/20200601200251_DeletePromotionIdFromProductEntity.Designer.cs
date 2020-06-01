@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineShop.Data;
 
 namespace OnlineShop.Data.Migrations
 {
     [DbContext(typeof(OnlineShopDbContext))]
-    partial class OnlineShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200601200251_DeletePromotionIdFromProductEntity")]
+    partial class DeletePromotionIdFromProductEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,8 +89,7 @@ namespace OnlineShop.Data.Migrations
 
                     b.Property<DateTime>("Updated")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -166,7 +167,7 @@ namespace OnlineShop.Data.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("OnlineShop.Data.Models.Subcategory", "Subcategory")
+                    b.HasOne("OnlineShop.Data.Models.Category", "Subcategory")
                         .WithMany()
                         .HasForeignKey("SubcategoryId")
                         .OnDelete(DeleteBehavior.NoAction)

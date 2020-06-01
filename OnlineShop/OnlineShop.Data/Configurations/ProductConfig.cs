@@ -30,10 +30,12 @@ namespace OnlineShop.Data.Configurations
 
 			builder
 				.Property(e => e.Created)
-				.HasDefaultValueSql("getdate()");
+				.HasDefaultValueSql("getdate()")
+				.ValueGeneratedOnAdd();
 
 			builder
 				.Property(e => e.Updated)
+				.HasDefaultValueSql("getdate()")
 				.ValueGeneratedOnAddOrUpdate();
 
 			builder
@@ -45,7 +47,7 @@ namespace OnlineShop.Data.Configurations
 				.IsUnicode(false);
 
 			builder
-				.HasQueryFilter(e => e.SoftDeleted);
+				.HasQueryFilter(e => !e.SoftDeleted);
 		}
 	}
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Data.Models;
 using OnlineShop.Data.Repositories;
 using OnlineShop.Services.AdminServices;
+using OnlineShop.Services.Dtos;
 using OnlineShop.Web.Models.ViewModels;
 
 namespace OnlineShop.Web.Controllers
@@ -16,7 +17,6 @@ namespace OnlineShop.Web.Controllers
 		private readonly IProductsService productsService;
 		private readonly ICategoriesService categoriesService;
 		private const string ProductForm = "ProductForm";
-
 
 		public AdminProductsController(IProductsService productsService, ICategoriesService categoriesService)
 		{
@@ -38,7 +38,7 @@ namespace OnlineShop.Web.Controllers
 		{
 			return View(ProductForm, new ProductFormVM()
 			{
-				Product = new Product(),
+				Product = new ProductInfoDto(),
 				Categories = categoriesService.GetCategories()
 			});
 		}
@@ -47,12 +47,12 @@ namespace OnlineShop.Web.Controllers
 		{
 			return View(ProductForm, new ProductFormVM()
 			{
-				Product = productsService.GetById(id.Value),
+				Product = productsService.GetBaseInfoById(id.Value),
 				Categories = categoriesService.GetCategories()
 			});
 		}
 
-		public IActionResult Save(Product product, IFormFile image)
+		public IActionResult Save(ProductInfoDto product, IFormFile image)
 		{
 			if (!ModelState.IsValid)
 				return View(ProductForm, product);

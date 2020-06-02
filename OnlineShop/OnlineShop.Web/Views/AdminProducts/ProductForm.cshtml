@@ -43,7 +43,9 @@ else
 			<hr />
 			<div class="form-group">
 				<label asp-for="@Model.Product.CategoryId" class="control-label"></label>
-				<select id="search" asp-for="@Model.Product.CategoryId" class="form-control" asp-items="@(new SelectList(Model.Categories, "Id", "Title"))"></select>
+				<select id="search" asp-for="@Model.Product.CategoryId" class="form-control" asp-items="@(new SelectList(Model.Categories, "Id", "Title"))">
+					<option>Select category</option>
+				</select>
 				<span asp-validation-for="@Model.Product.CategoryId" class="text-danger"></span>
 			</div>
 			<div class="form-group">

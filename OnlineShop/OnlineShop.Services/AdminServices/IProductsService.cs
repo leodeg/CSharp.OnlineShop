@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using OnlineShop.Data.Models;
+using OnlineShop.Services.Dtos;
 
 namespace OnlineShop.Services.AdminServices
 {
 	public interface IProductsService
 	{
-		Product GetById(int id);
+		ProductInfoDto GetBaseInfoById(int id);
 		IEnumerable<Product> GetProducts();
 		void Remove(int id);
-		void Save(Product product);
 		IEnumerable<Product> GetWithSubcategory();
+		void Save(ProductInfoDto product);
+		Product GetById(int id);
 	}
 }

@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using OnlineShop.Data.Models;
 using OnlineShop.Data.Repositories;
 using OnlineShop.Services.Dtos;
+using OnlineShop.Services.FileServices;
 
 namespace OnlineShop.Services.AdminServices
 {
@@ -12,11 +14,13 @@ namespace OnlineShop.Services.AdminServices
 	{
 		private readonly IProductRepository productRepository;
 		private readonly IMapper mapper;
+		private readonly IImageService imageService;
 
-		public ProductsService(IProductRepository productRepository, IMapper mapper)
+		public ProductsService(IProductRepository productRepository, IMapper mapper, IImageService imageService)
 		{
 			this.productRepository = productRepository;
 			this.mapper = mapper;
+			this.imageService = imageService;
 		}
 
 		public Product GetById(int id)
@@ -50,8 +54,45 @@ namespace OnlineShop.Services.AdminServices
 			productRepository.SaveChanges();
 		}
 
+		public void SaveWithImage(ProductInfoDto productDto, IFormFile image)
+		{
+			Product product = mapper.Map<Product>(productDto);
+
+			if (product.Id == 0)
+			{
+				if (image != null)
+					product.ImageUrl = imageService.SaveImage(image).Result;
+				productRepository.Create(product);
+			}
+			else
+			{
+				if (image != null)
+				{
+					if (!string.IsNullOrEmpty(product.ImageUrl))
+						imageService.DeleteImage(product.ImageUrl);
+					product.ImageUrl = imageService.SaveImage(image).Result;
+				}
+				productRepository.Update(product.Id, product);
+			}
+
+			productRepository.SaveChanges();
+		}
+
+		// TODO: add change image feature
+		public void ChangeImage(int productId, IFormFile image)
+		{
+			throw new NotImplementedException();
+		}
+
+		// TODO: add soft delete feature
+		public void SoftDelete(int id)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void Remove(int id)
 		{
+			imageService.DeleteImage(productRepository.GetImageUrl(id));
 			productRepository.Remove(id);
 			productRepository.SaveChanges();
 		}

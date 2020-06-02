@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using OnlineShop.Data.Models;
 using OnlineShop.Services.Dtos;
+using Microsoft.AspNetCore.Http;
 
 namespace OnlineShop.Services.AdminServices
 {
@@ -12,5 +13,6 @@ namespace OnlineShop.Services.AdminServices
 		IEnumerable<Product> GetWithSubcategory();
 		void Save(ProductInfoDto product);
 		Product GetById(int id);
+		void SaveWithImage(ProductInfoDto productDto, IFormFile image);
 	}
 }

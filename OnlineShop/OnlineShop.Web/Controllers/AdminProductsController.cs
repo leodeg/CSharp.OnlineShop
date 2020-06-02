@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -57,7 +58,9 @@ namespace OnlineShop.Web.Controllers
 			if (!ModelState.IsValid)
 				return View(ProductForm, product);
 
-			productsService.Save(product);
+			if (image != null)
+				productsService.SaveWithImage(product, image);
+			else productsService.Save(product);
 			return RedirectToAction(nameof(Index));
 		}
 

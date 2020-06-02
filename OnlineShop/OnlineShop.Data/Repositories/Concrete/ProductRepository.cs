@@ -25,6 +25,11 @@ namespace OnlineShop.Data.Repositories
 			return dbSet.AsNoTracking().Include(e => e.Subcategory).ToList();
 		}
 
+		public string GetImageUrl(int id)
+		{
+			return dbSet.SingleOrDefault(e => e.Id == id)?.ImageUrl;
+		}
+
 		public override void Update(int id, Product entity)
 		{
 			if (entity == null)
@@ -39,14 +44,9 @@ namespace OnlineShop.Data.Repositories
 			product.Description = entity.Description;
 			product.ShortDescription = entity.ShortDescription;
 			product.Quantity = entity.Quantity;
+			product.ImageUrl = entity.ImageUrl;
 
-			if (entity.ImageUrl != null
-				&& entity.ImageUrl.Length > 0
-				&& !product.ImageUrl.Equals(entity.ImageUrl))
-				product.ImageUrl = entity.ImageUrl;
-
-			if (entity.CategoryId != product.CategoryId 
-				|| entity.SubcategoryId != product.SubcategoryId)
+			if (entity.CategoryId != product.CategoryId || entity.SubcategoryId != product.SubcategoryId)
 				UpdateCategoryAndSubcategory(id, entity.SubcategoryId);
 		}
 

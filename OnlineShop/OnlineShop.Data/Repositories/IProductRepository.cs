@@ -20,5 +20,6 @@ namespace OnlineShop.Data.Repositories
 		void UpdateCategoryAndSubcategory(int productId, int subcategoryId);
 		void RemoveSoft(int productId);
 		void RestoreRemovedSoft(int productId);
+		string GetImageUrl(int id);
 	}
 }

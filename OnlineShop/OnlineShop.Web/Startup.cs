@@ -17,6 +17,7 @@ using OnlineShop.Data.Models;
 using OnlineShop.Services.AdminServices;
 using AutoMapper;
 using OnlineShop.Services.Mapping;
+using OnlineShop.Services.FileServices;
 
 namespace OnlineShop.Web
 {
@@ -36,6 +37,8 @@ namespace OnlineShop.Web
 			AssignAutoMapper(services);
 			AssignRepositories(services);
 			AssignServices(services);
+
+			services.AddSingleton<IImageService>(new ImageService(Configuration.GetSection("Path").GetSection("Images").Value, new ImageManager()));
 
 			services.AddControllersWithViews();
 			services.AddRazorPages();
@@ -78,6 +81,7 @@ namespace OnlineShop.Web
 			services.AddTransient<ICategoriesService, CategoriesService>();
 			services.AddTransient<ISubcategoriesService, SubcategoriesService>();
 			services.AddTransient<IProductsService, ProductsService>();
+
 		}
 
 

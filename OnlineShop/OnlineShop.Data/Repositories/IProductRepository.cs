@@ -13,13 +13,16 @@ namespace OnlineShop.Data.Repositories
 	{
 		IEnumerable<Product> GetWithPriceOffers();
 		IEnumerable<Product> GetWithSubcategory();
-		void UpdateQuantity(int productId, int quantity);
+		void SetQuantity(int productId, int quantity);
 		void UpdateImageUrl(int productId, string imageUrl);
-		void UpdatePriceOffer(Promotion priceOffer);
+		Promotion GetCurrentPrice(int productId);
+		void SavePriceOffer(int productId, Promotion priceOffer);
 		void RemovePriceOffer(int productId);
 		void UpdateCategoryAndSubcategory(int productId, int subcategoryId);
 		void RemoveSoft(int productId);
 		void RestoreRemovedSoft(int productId);
 		string GetImageUrl(int id);
+		Promotion GetPriceOffer(int productId);
+		void DeleteImageUrl(int productId);
 	}
 }

@@ -26,7 +26,6 @@
 			<th>@Html.DisplayNameFor(model => model.Price)</th>
 			<th>@Html.DisplayNameFor(model => model.Quantity)</th>
 			<th>@Html.DisplayNameFor(model => model.Subcategory)</th>
-			<th>@Html.DisplayNameFor(model => model.SoftDeleted)</th>
 			<th>Actions</th>
 		</tr>
 	</thead>
@@ -40,11 +39,31 @@
 					<td>@Html.DisplayFor(modelItem => item.Price)</td>
 					<td>@Html.DisplayFor(modelItem => item.Quantity)</td>
 					<td>@Html.DisplayFor(modelItem => item.Subcategory.Title)</td>
-					<td>@Html.DisplayFor(modelItem => item.SoftDeleted)</td>
 					<td>
-						<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
-						<a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a>
-						<a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+						<div class="row">
+							<div class="dropdown mr-2">
+								<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									Actions
+								</button>
+								<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+									<a asp-action="Edit" asp-route-id="@item.Id" class="dropdown-item">Edit</a>
+									<a asp-action="Details" asp-route-id="@item.Id" class="dropdown-item">Details</a>
+									<a asp-action="ChangeImage" asp-route-productId="@item.Id" class="dropdown-item">Change Image</a>
+									<a asp-action="DeleteImage" asp-route-productId="@item.Id" class="dropdown-item">Delete Image</a>
+									<a asp-action="Delete" asp-route-id="@item.Id" class="dropdown-item">Delete Product</a>
+								</div>
+							</div>
+							<div class="dropdown">
+								<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									Promotion
+								</button>
+								<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+									<a asp-action="CreatePromotion" asp-route-productId="@item.Id" class="dropdown-item">Create</a>
+									<a asp-action="EditPromotion" asp-route-productId="@item.Id" class="dropdown-item">Edit</a>
+									<a asp-action="DeletePromotion" asp-route-productId="@item.Id" class="dropdown-item">Delete</a>
+								</div>
+							</div>
+						</div>
 					</td>
 				</tr>
 			}

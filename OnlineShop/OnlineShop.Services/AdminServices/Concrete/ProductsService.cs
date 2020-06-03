@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using OnlineShop.Data.Models;
@@ -56,6 +57,7 @@ namespace OnlineShop.Services.AdminServices
 
 		public void SaveWithImage(ProductInfoDto productDto, IFormFile image)
 		{
+			// TODO: refactoring
 			Product product = mapper.Map<Product>(productDto);
 
 			if (product.Id == 0)
@@ -78,16 +80,63 @@ namespace OnlineShop.Services.AdminServices
 			productRepository.SaveChanges();
 		}
 
-		// TODO: add change image feature
-		public void ChangeImage(int productId, IFormFile image)
+		public PromotionDto GetPriceOffer(int productId)
 		{
-			throw new NotImplementedException();
+			return mapper.Map<PromotionDto>(productRepository.GetPriceOffer(productId));
 		}
 
-		// TODO: add soft delete feature
-		public void SoftDelete(int id)
+		public void SavePriceOffer(int productId, PromotionDto priceOffer)
 		{
-			throw new NotImplementedException();
+			productRepository.SavePriceOffer(productId, mapper.Map<Promotion>(priceOffer));
+			productRepository.SaveChanges();
+		}
+
+		public void DeletePriceOffer(int productId)
+		{
+			productRepository.RemovePriceOffer(productId);
+			productRepository.SaveChanges();
+		}
+
+		public string GetImageUrl(int productId)
+		{
+			return productRepository.GetImageUrl(productId);
+		}
+
+		public async Task ChangeImage(int productId, IFormFile image)
+		{
+			if (image != null)
+			{
+				DeleteOldImageFromLocalFiles(productId);
+				string imageUrl = await imageService.SaveImage(image);
+				productRepository.UpdateImageUrl(productId, imageUrl);
+				productRepository.SaveChanges();
+			}
+		}
+
+		private void DeleteOldImageFromLocalFiles(int productId)
+		{
+			string oldImageUrl = productRepository.GetImageUrl(productId);
+			if (!string.IsNullOrEmpty(oldImageUrl))
+				imageService.DeleteImage(oldImageUrl);
+		}
+
+		public void DeleteImage(int productId)
+		{
+			DeleteOldImageFromLocalFiles(productId);
+			productRepository.DeleteImageUrl(productId);
+			productRepository.SaveChanges();
+		}
+
+		public void SoftDelete(int productId)
+		{
+			productRepository.RemoveSoft(productId);
+			productRepository.SaveChanges();
+		}
+
+		public void RestoreSoftDeleted(int productId)
+		{
+			productRepository.RestoreRemovedSoft(productId);
+			productRepository.SaveChanges();
 		}
 
 		public void Remove(int id)

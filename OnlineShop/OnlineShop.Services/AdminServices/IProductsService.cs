@@ -2,6 +2,7 @@
 using OnlineShop.Data.Models;
 using OnlineShop.Services.Dtos;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace OnlineShop.Services.AdminServices
 {
@@ -14,5 +15,13 @@ namespace OnlineShop.Services.AdminServices
 		void Save(ProductInfoDto product);
 		Product GetById(int id);
 		void SaveWithImage(ProductInfoDto productDto, IFormFile image);
+		void SavePriceOffer(int productId, PromotionDto priceOffer);
+		void DeletePriceOffer(int productId);
+		Task ChangeImage(int productId, IFormFile image);
+		void SoftDelete(int productId);
+		void RestoreSoftDeleted(int productId);
+		PromotionDto GetPriceOffer(int productId);
+		string GetImageUrl(int productId);
+		void DeleteImage(int productId);
 	}
 }

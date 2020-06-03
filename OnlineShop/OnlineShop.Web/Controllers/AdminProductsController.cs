@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +19,8 @@ namespace OnlineShop.Web.Controllers
 		private readonly IProductsService productsService;
 		private readonly ICategoriesService categoriesService;
 		private const string ProductForm = "ProductForm";
+		private const string PriceOfferForm = "PriceOfferForm";
+		private const string ChangeImageForm = "ChangeImageForm";
 
 		public AdminProductsController(IProductsService productsService, ICategoriesService categoriesService)
 		{
@@ -67,6 +70,72 @@ namespace OnlineShop.Web.Controllers
 		public IActionResult Delete(int? id)
 		{
 			productsService.Remove(id.Value);
+			return RedirectToAction(nameof(Index));
+		}
+
+		#region Promotion
+
+		public IActionResult CreatePromotion(int productId)
+		{
+			return View(PriceOfferForm, new PromotionDto() { ProductId = productId });
+		}
+
+		public IActionResult EditPromotion(int productId)
+		{
+			PromotionDto promotion = productsService.GetPriceOffer(productId);
+
+			if (promotion == null)
+				return BadRequest();
+
+			return View(PriceOfferForm, promotion);
+		}
+
+		public IActionResult SavePromotion(int? productId, PromotionDto promotion)
+		{
+			if (productId == null)
+				return BadRequest();
+
+			if (!ModelState.IsValid)
+			{
+				return View(PriceOfferForm, promotion);
+			}
+
+			productsService.SavePriceOffer(productId.Value, promotion);
+			return RedirectToAction(nameof(Index));
+		}
+
+		public IActionResult DeletePromotion(int? productId)
+		{
+			productsService.DeletePriceOffer(productId.Value);
+			return RedirectToAction(nameof(Index));
+		}
+
+		#endregion
+
+		public IActionResult ChangeImage(int? productId)
+		{
+			return View(ChangeImageForm, new ProductChangeImageVM()
+			{
+				ProductId = productId.Value,
+				ImageUrl = productsService.GetImageUrl(productId.Value)
+			});
+		}
+
+		public async Task<IActionResult> SaveImage(int? productId, IFormFile image)
+		{
+			if (productId == null)
+				return BadRequest();
+
+			await productsService.ChangeImage(productId.Value, image);
+			return RedirectToAction(nameof(Index));
+		}
+
+		public IActionResult DeleteImage (int? productId)
+		{
+			if (productId == null)
+				return BadRequest();
+
+			productsService.DeleteImage(productId.Value);
 			return RedirectToAction(nameof(Index));
 		}
 	}

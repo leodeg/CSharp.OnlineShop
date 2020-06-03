@@ -12,6 +12,7 @@ namespace OnlineShop.Services.Mapping
 		public MappingDtoProfile()
 		{
 			CreateMap<Product, ProductInfoDto>().ReverseMap();
+			CreateMap<Promotion, PromotionDto>().ReverseMap();
 		}
 	}
 }

@@ -61,3 +61,7 @@ body {
 .input-validation-error {
 	border-color: #FF7851;
 }
+
+.img-thumbnail {
+	max-height: 300px;
+}

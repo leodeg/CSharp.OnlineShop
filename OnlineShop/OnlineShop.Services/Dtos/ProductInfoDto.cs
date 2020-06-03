@@ -7,8 +7,11 @@ using OnlineShop.Data.Models;
 
 namespace OnlineShop.Services.Dtos
 {
-	public class ProductInfoDto : Model
+	public class ProductInfoDto
 	{
+		[Required]
+		public int Id { get; set; }
+
 		[Required]
 		[MaxLength(100)]
 		public string Title { get; set; }

@@ -25,11 +25,6 @@ namespace OnlineShop.Data.Repositories
 			return dbSet.AsNoTracking().Include(e => e.Subcategory).ToList();
 		}
 
-		public string GetImageUrl(int id)
-		{
-			return dbSet.SingleOrDefault(e => e.Id == id)?.ImageUrl;
-		}
-
 		public override void Update(int id, Product entity)
 		{
 			if (entity == null)
@@ -46,11 +41,30 @@ namespace OnlineShop.Data.Repositories
 			product.Quantity = entity.Quantity;
 			product.ImageUrl = entity.ImageUrl;
 
-			if (entity.CategoryId != product.CategoryId || entity.SubcategoryId != product.SubcategoryId)
-				UpdateCategoryAndSubcategory(id, entity.SubcategoryId);
+			if (entity.CategoryId != product.CategoryId
+				|| entity.SubcategoryId != product.SubcategoryId)
+			{
+				product.CategoryId = entity.CategoryId;
+				product.SubcategoryId = entity.SubcategoryId;
+			}
 		}
 
-		public void UpdateQuantity(int productId, int quantity)
+		public void UpdateCategoryAndSubcategory(int productId, int subcategoryId)
+		{
+			Product product = dbSet
+				.Include(e => e.Category)
+				.Include(e => e.Subcategory)
+				.FirstOrDefault(e => e.Id == productId);
+
+			Subcategory subcategory = context.Subcategories
+				.Include(e => e.Category)
+				.FirstOrDefault(e => e.Id == subcategoryId);
+
+			product.CategoryId = subcategory.CategoryId;
+			product.SubcategoryId = subcategoryId;
+		}
+
+		public void SetQuantity(int productId, int quantity)
 		{
 			if (quantity < 0)
 				throw new ArgumentOutOfRangeException("Quantity must be positive value!");
@@ -59,20 +73,55 @@ namespace OnlineShop.Data.Repositories
 			product.Quantity = quantity;
 		}
 
+		public void AddQuantity(int productId, int quantity)
+		{
+			if (quantity < 0)
+				throw new ArgumentOutOfRangeException("Quantity must be positive value!");
+
+			Product product = dbSet.FirstOrDefault(e => e.Id == productId);
+			product.Quantity += quantity;
+		}
+
+		public string GetImageUrl(int id)
+		{
+			return dbSet.AsNoTracking().SingleOrDefault(e => e.Id == id)?.ImageUrl;
+		}
+
 		public void UpdateImageUrl(int productId, string imageUrl)
 		{
-			if (imageUrl != null)
+			if (!string.IsNullOrEmpty(imageUrl))
 			{
 				Product product = dbSet.FirstOrDefault(e => e.Id == productId);
-
-				if (!product.ImageUrl.Equals(imageUrl))
+				if (product != null)
 					product.ImageUrl = imageUrl;
 			}
 		}
 
-		public void UpdatePriceOffer(Promotion priceOffer)
+		public void DeleteImageUrl (int productId)
 		{
-			Product product = dbSet.Include(e => e.Promotion).FirstOrDefault(e => e.Id == priceOffer.ProductId);
+			Product product = dbSet.FirstOrDefault(e => e.Id == productId);
+			if (product != null)
+				product.ImageUrl = null;
+		}
+
+		public Promotion GetCurrentPrice(int productId)
+		{
+			Product product = dbSet.Include(e => e.Promotion)
+				.FirstOrDefault(e => e.Id == productId);
+
+			return product?.Promotion ?? new Promotion
+			{ ProductId = product.Id, PriceOffer = product.Price };
+		}
+
+		public Promotion GetPriceOffer(int productId)
+		{
+			return context.Promotions.SingleOrDefault(e => e.ProductId == productId);
+		}
+
+		public void SavePriceOffer(int productId, Promotion priceOffer)
+		{
+			Product product = dbSet.Include(e => e.Promotion)
+				.FirstOrDefault(e => e.Id == productId);
 
 			if (product.Promotion == null)
 			{
@@ -87,17 +136,8 @@ namespace OnlineShop.Data.Repositories
 
 		public void RemovePriceOffer(int productId)
 		{
-			Product product = dbSet.Include(e => e.Promotion).FirstOrDefault(e => e.Id == productId);
-			product.Promotion = null;
-		}
-
-		public void UpdateCategoryAndSubcategory(int productId, int subcategoryId)
-		{
-			Product product = dbSet.Include(e => e.Category).Include(e => e.Subcategory).FirstOrDefault(e => e.Id == productId);
-			Subcategory subcategory = context.Subcategories.Include(e => e.Category).FirstOrDefault(e => e.Id == subcategoryId);
-
-			product.CategoryId = subcategory.CategoryId;
-			product.SubcategoryId = subcategoryId;
+			Promotion promotion = context.Promotions.Single(e => e.ProductId == productId);
+			context.Promotions.Remove(promotion);
 		}
 
 		public void RemoveSoft(int productId)

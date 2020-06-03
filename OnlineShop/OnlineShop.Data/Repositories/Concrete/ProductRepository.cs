@@ -15,6 +15,11 @@ namespace OnlineShop.Data.Repositories
 		{
 		}
 
+		public IQueryable<Product> GetProductsForFilters ()
+		{
+			return dbSet.AsNoTracking();
+		}
+
 		public IEnumerable<Product> GetWithPriceOffers()
 		{
 			return dbSet.AsNoTracking().Include(e => e.Promotion).ToList();

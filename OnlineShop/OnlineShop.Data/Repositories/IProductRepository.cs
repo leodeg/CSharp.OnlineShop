@@ -24,5 +24,6 @@ namespace OnlineShop.Data.Repositories
 		string GetImageUrl(int id);
 		Promotion GetPriceOffer(int productId);
 		void DeleteImageUrl(int productId);
+		IQueryable<Product> GetProductsForFilters();
 	}
 }

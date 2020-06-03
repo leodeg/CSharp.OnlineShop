@@ -60,22 +60,16 @@ namespace OnlineShop.Services.AdminServices
 			// TODO: refactoring
 			Product product = mapper.Map<Product>(productDto);
 
+			if (image != null)
+			{
+				if (!string.IsNullOrEmpty(product.ImageUrl))
+					imageService.DeleteImage(product.ImageUrl);
+				product.ImageUrl = imageService.SaveImage(image).Result;
+			}
+
 			if (product.Id == 0)
-			{
-				if (image != null)
-					product.ImageUrl = imageService.SaveImage(image).Result;
 				productRepository.Create(product);
-			}
-			else
-			{
-				if (image != null)
-				{
-					if (!string.IsNullOrEmpty(product.ImageUrl))
-						imageService.DeleteImage(product.ImageUrl);
-					product.ImageUrl = imageService.SaveImage(image).Result;
-				}
-				productRepository.Update(product.Id, product);
-			}
+			else productRepository.Update(product.Id, product);
 
 			productRepository.SaveChanges();
 		}

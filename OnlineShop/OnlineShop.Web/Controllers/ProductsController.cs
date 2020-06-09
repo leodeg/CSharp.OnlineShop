@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Data.Models;
 using OnlineShop.Data.Repositories;
+using OnlineShop.Models;
 using OnlineShop.Services.AdminServices;
 using OnlineShop.Services.Dtos;
 using OnlineShop.Services.ProductServices;
@@ -34,7 +35,17 @@ namespace OnlineShop.Web.Controllers
 				options.CurrentPage = pageNumber.Value;
 
 			IEnumerable<ProductListDto> products = await productsService.SortFilterPage(options).ToListAsync();
-			return View(new ProductListWithFiltersDto(options, products));
+
+			return View(new ProductIndexVM()
+			{
+				Options = new ProductListWithFiltersDto(options, products),
+				PagingInformation = new PagingInformation()
+				{
+					CurrentPage = options.CurrentPage,
+					ItemsPerPage = options.PageSize,
+					TotalItems = options.TotalItemsCount
+				}
+			});
 		}
 	}
 }

@@ -10,9 +10,9 @@ using OnlineShop.Services.ProductServices;
 namespace OnlineShop.Web.Models.ViewModels
 {
 
-	public class ProductFormVM
+	public class ProductIndexVM
 	{
-		public ProductInfoDto Product { get; set; }
-		public IEnumerable<Category> Categories { get; set; }
+		public ProductListWithFiltersDto Options { get; set; }
+		public PagingInformation PagingInformation { get; set; }
 	}
 }

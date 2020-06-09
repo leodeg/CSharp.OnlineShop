@@ -10,11 +10,11 @@
 			</li>
 			if (category.Subcategories.Any())
 			{
-				<li class="list-group-item ml-2">
+				<li class="list-group-item ml-1">
 					<ul class="list-group list-group-flush">
 						@foreach (var subcategory in category.Subcategories)
 						{
-							<li class="list-group-item">
+							<li class="list-group-item small">
 								<a asp-action="Index" asp-route-subcategoryId="@subcategory.Id">@subcategory.Title</a>
 							</li>
 						}

@@ -7,7 +7,7 @@ using System.Text;
 using OnlineShop.Data.Models;
 using OnlineShop.Services.Dtos;
 
-namespace OnlineShop.Services.ProductServices.QueryObjects
+namespace OnlineShop.Services.ProductServices.QueryExtensions
 {
 	public static class ProductListDtoSelect
 	{
@@ -20,6 +20,7 @@ namespace OnlineShop.Services.ProductServices.QueryObjects
 				Price = p.Price,
 				Quantity = p.Quantity,
 				ShortDescription = p.ShortDescription,
+				ImageUrl = p.ImageUrl,
 
 				ActualPrice = p.Promotion == null ? p.Price : p.Promotion.PriceOffer,
 				PromotionMessage = p.Promotion == null ? null : p.Promotion.Message,

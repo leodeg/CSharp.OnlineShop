@@ -17,7 +17,7 @@ namespace OnlineShop.Data.Repositories
 
 		public IQueryable<Product> GetProductsForFilters ()
 		{
-			return dbSet.AsNoTracking();
+			return dbSet.AsNoTracking().Include(e => e.Category).Include(e => e.Subcategory);
 		}
 
 		public IEnumerable<Product> GetWithPriceOffers()
@@ -62,7 +62,6 @@ namespace OnlineShop.Data.Repositories
 				.FirstOrDefault(e => e.Id == productId);
 
 			Subcategory subcategory = context.Subcategories
-				.Include(e => e.Category)
 				.FirstOrDefault(e => e.Id == subcategoryId);
 
 			product.CategoryId = subcategory.CategoryId;

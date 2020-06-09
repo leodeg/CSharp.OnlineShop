@@ -11,6 +11,6 @@ namespace OnlineShop.Data.Repositories
 {
 	public interface ICategoryRepository : IRepository<Category>
 	{
-
+		IEnumerable<Category> GetWithSubcategories();
 	}
 }

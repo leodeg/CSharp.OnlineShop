@@ -9,5 +9,6 @@ namespace OnlineShop.Services.AdminServices
 		void RemoveCategory(int id);
 		void SaveCategory(Category category);
 		Category GetById(int id);
+		IEnumerable<Category> GetWithSubcategories();
 	}
 }

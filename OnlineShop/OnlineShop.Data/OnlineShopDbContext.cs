@@ -18,6 +18,7 @@ namespace OnlineShop.Data
 		{
 			modelBuilder.ApplyConfiguration(new ProductConfig());
 			modelBuilder.ApplyConfiguration(new PromotionConfig());
+			modelBuilder.ApplyConfiguration(new CategoryConfig());
 		}
 
 		public DbSet<Promotion> Promotions { get; set; }

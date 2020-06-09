@@ -1,0 +1,121 @@
+﻿@model OnlineShop.Services.Dtos.ProductListWithFiltersDto
+
+@{
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_BaseLayout.cshtml";
+}
+
+<div class="container mb-4">
+	@* ======= Search Input ======= *@
+	<form>
+		<div class="row justify-content-center">
+			<input asp-for="Options.SearchText" name="SearchText" class="form-control col-md-10" placeholder="Search by title and description">
+			<button type="submit" class="btn btn-primary col-md-1 ml-2">Search</button>
+		</div>
+	</form>
+</div>
+
+<div class="mb-4">
+	<form class="form-inline justify-content-center align-items-end">
+
+		@* ======= Sort By ======= *@
+		<div class="form-group mx-2">
+			<div>
+				<label class="control-label">Sort By</label>
+				<select asp-for="Options.OrderBy" name="OrderBy"
+						asp-items="Html.GetEnumSelectList<OnlineShop.Services.ProductServices.QueryExtensions.ProductOrderBy>()"
+						class="form-control"></select>
+			</div>
+		</div>
+
+		@* ======= Filter By ======= *@
+		<div class="form-group mx-2">
+			<div>
+				<label class="control-label">Filter By</label>
+				<select asp-for="Options.FilterBy" name="FilterBy"
+						asp-items="Html.GetEnumSelectList<OnlineShop.Services.ProductServices.QueryExtensions.ProductFilterBy>()"
+						class="form-control"></select>
+			</div>
+		</div>
+
+		@* ======= Min Price ======= *@
+		<div class="form-group mx-2">
+			<div>
+				<label class="control-label">Min price</label>
+				<input asp-for="Options.MinPrice" name="MinPrice" class="form-control">
+			</div>
+		</div>
+
+		@* ======= Max Price ======= *@
+		<div class="form-group row mx-2">
+			<div>
+				<label class="control-label">Max price</label>
+				<input asp-for="Options.MaxPrice" name="MaxPrice" class="form-control">
+			</div>
+		</div>
+
+		@* ======= Page Number ======= *@
+		<div class="form-group mx-2">
+			<div>
+				<label class="control-label">Page</label>
+				<input asp-for="Options.CurrentPage" name="PageNumber" class="form-control">
+				<span class="num-pages-text">of @Model.Options.PagesCount</span>
+			</div>
+		</div>
+
+		@* ======= Page size ======= *@
+		<div class="form-group mx-2">
+			<div>
+				<label class="control-label">Page&nbsp;Size</label>
+				<select asp-for="Options.PageSize" name="PageSize"
+						asp-items="Model.Options.PageSizes.Select(x => new SelectListItem {Text = x.ToString(), Value = x.ToString()})"
+						class="form-control"></select>
+			</div>
+		</div>
+
+		<input id="PrevCheckState" name="PrevCheckState" type="hidden" value=@Model.Options.PreviousState>
+		<button type="submit" class="btn btn-primary">Update</button>
+	</form>
+</div>
+
+<div class="row">
+	@* ======= Categories and Subcategories ======= *@
+	<div class="col-md-2">
+		<div>
+			@await Component.InvokeAsync("CategoriesMenu")
+		</div>
+	</div>
+	<div class="col-md-10">
+		<div class="container">
+			@* ======= Products List ======= *@
+			<div class="row">
+				@* ======= Product ======= *@
+				@if (Model.Products.Any())
+				{
+					@foreach (var product in Model.Products)
+					{
+						<div class="col-md-3">
+							<div class="card">
+								<img class="card-img-top" src="@Context.Request.PathBase/content/images/@product.ImageUrl">
+
+								<div class="card-body">
+									<p class="small">@product.Price <em class="text-warning">@product.PromotionMessage</em></p>
+									<h5 class="card-title">@product.Title</h5>
+									<p class="card-text">@product.ShortDescription</p>
+									<p class="text-center">
+										<a href="#" class="btn btn-primary">Show more</a>
+									</p>
+								</div>
+							</div>
+						</div>
+					}
+				}
+				else
+				{
+					<h1 class="text-center">No Products Found</h1>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+

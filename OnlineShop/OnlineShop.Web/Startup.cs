@@ -18,6 +18,7 @@ using OnlineShop.Services.AdminServices;
 using AutoMapper;
 using OnlineShop.Services.Mapping;
 using OnlineShop.Services.FileServices;
+using OnlineShop.Services.ProductServices;
 
 namespace OnlineShop.Web
 {
@@ -74,6 +75,7 @@ namespace OnlineShop.Web
 			services.AddTransient<ICategoryRepository, CategoryRepository>();
 			services.AddTransient<ISubcategoryRepository, SubcategoryRepository>();
 			services.AddTransient<IProductRepository, ProductRepository>();
+			services.AddTransient<IListProductsService, ListProductsService>();
 		}
 
 		private static void AssignServices(IServiceCollection services)

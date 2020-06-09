@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using OnlineShop.Data.Extensions;
 using OnlineShop.Data.Repositories;
 using OnlineShop.Services.Dtos;
-using OnlineShop.Services.ProductServices.QueryObjects;
+using OnlineShop.Services.ProductServices.QueryExtensions;
 
 namespace OnlineShop.Services.ProductServices
 {
-	class ListProductsService
+	public class ListProductsService : IListProductsService
 	{
 		private readonly IProductRepository productRepository;
 
@@ -18,16 +17,18 @@ namespace OnlineShop.Services.ProductServices
 			this.productRepository = productRepository;
 		}
 
-		public IQueryable<ProductListDto> SortFilterPage (ProductFilterPageOptions options)
+		public IQueryable<ProductListDto> SortFilterPage(ProductFilterPageOptions options)
 		{
 			var products = productRepository
 				.GetProductsForFilters()
 				.MapToProductListDto()
 				.ProductFilterBySubcategory(options.SubcategoryId)
-				.ProductFilterByPrice(options.MinPrice, options.MaxPrice);
+				.ProductFilterByPrice(options.MinPrice, options.MaxPrice)
+				.ProductFilterBySearchText(options.SearchText)
+				.OrderProductsBy(options.OrderBy);
 
-			return products.Page(options.PageNumber, options.PageSize);
-
+			options.UpdateOptionsProperties(products);
+			return products.Page(options.CurrentPage - 1, options.PageSize);
 		}
 	}
 }

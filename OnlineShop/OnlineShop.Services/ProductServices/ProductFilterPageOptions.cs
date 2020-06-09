@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using OnlineShop.Services.ProductServices.QueryObjects;
+using OnlineShop.Services.ProductServices.QueryExtensions;
 
 namespace OnlineShop.Services.ProductServices
 {
@@ -10,8 +10,10 @@ namespace OnlineShop.Services.ProductServices
 	{
 		public const int DefaultPageSize = 10;
 
-		public int PageNumber { get; set; }
-		public int PageSize { get; set; }
+		public string SearchText { get; set; }
+
+		public int CurrentPage { get; set; } = 1;
+		public int PageSize { get; set; } = DefaultPageSize;
 
 		public double MinPrice { get; set; }
 		public double MaxPrice { get; set; }
@@ -23,23 +25,28 @@ namespace OnlineShop.Services.ProductServices
 		public ProductFilterBy FilterBy { get; set; }
 
 
-		public int[] PageSizes = new[] { 5, DefaultPageSize, 20, 50, 100, 500, 1000 };
+		public int[] PageSizes = new[] { 5, DefaultPageSize, 20, 50, 100, 500, 750, 1000 };
 		public int PagesCount { get; set; }
 		public string PreviousState { get; set; }
+		public int TotalItemsCount { get; set; }
 
 
-		public void Setup<T> (IQueryable<T> query)
+		/// <summary>
+		/// Calculate pages count and reset current page if options is changed.
+		/// </summary>
+		public void UpdateOptionsProperties<T> (IQueryable<T> query)
 		{
+			TotalItemsCount = query.Count();
 			PagesCount = (int)Math.Ceiling((double)query.Count() / PageSize);
-			PageNumber = Math.Min(Math.Max(1, PageNumber), PagesCount);
+			CurrentPage = Math.Min(Math.Max(1, CurrentPage), PagesCount);
 			ResetCurrentPageNumberOnStateChanges();
 		}
 
 		private void ResetCurrentPageNumberOnStateChanges()
 		{
 			var newState = GenerateCheckState();
-			if (!PreviousState.Equals(newState))
-				PageNumber = 1;
+			if (PreviousState != newState)
+				CurrentPage = 1;
 			PreviousState = newState;
 		}
 
@@ -49,7 +56,7 @@ namespace OnlineShop.Services.ProductServices
 		/// </summary>
 		private string GenerateCheckState()
 		{
-			return $"{(int)FilterBy},{MinPrice},{MaxPrice},{PageSize},{PagesCount}";
+			return $"{(int)FilterBy},{MinPrice},{MaxPrice},{PageSize},{PagesCount},{SearchText}";
 		}
 	}
 }

@@ -14,6 +14,5 @@ namespace OnlineShop.Data.Models
 
 		[ForeignKey(nameof(Category))]
 		public int CategoryId { get; set; }
-		public Category Category { get; set; }
 	}
 }

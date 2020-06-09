@@ -15,6 +15,19 @@ namespace OnlineShop.Data.Repositories
 		{
 		}
 
+		public IEnumerable<Category> GetWithSubcategories()
+		{
+			return dbSet.AsNoTracking().Include(e => e.Subcategories);
+		}
+
+		public void AddSubcategory (int id, Subcategory subcategory)
+		{
+			var category = dbSet.SingleOrDefault(e => e.Id == id);
+			if (category == null)
+				throw new InvalidOperationException($"Can't find category with {id} id");
+			category.Subcategories.Add(subcategory);
+		}
+
 		public override void Update(int id, Category entity)
 		{
 			if (entity == null)

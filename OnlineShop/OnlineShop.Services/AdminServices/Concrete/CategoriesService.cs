@@ -20,6 +20,11 @@ namespace OnlineShop.Services.AdminServices
 			return categoryRepository.Get();
 		}
 
+		public IEnumerable<Category> GetWithSubcategories()
+		{
+			return categoryRepository.GetWithSubcategories();
+		}
+
 		public Category GetById(int id)
 		{
 			return categoryRepository.Get(id);

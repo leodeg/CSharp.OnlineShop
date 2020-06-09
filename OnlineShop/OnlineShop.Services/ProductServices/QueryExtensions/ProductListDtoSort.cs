@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using OnlineShop.Services.Dtos;
 
-namespace OnlineShop.Services.ProductServices.QueryObjects
+namespace OnlineShop.Services.ProductServices.QueryExtensions
 {
 	public enum ProductOrderBy
 	{
@@ -24,10 +24,13 @@ namespace OnlineShop.Services.ProductServices.QueryObjects
 			{
 				case ProductOrderBy.Default:
 					return products.OrderByDescending(product => product.Id);
+
 				case ProductOrderBy.ByPublicationYear:
 					return products.OrderByDescending(product => product.PublishedOn);
+
 				case ProductOrderBy.ByPriceLowestFirst:
 					return products.OrderBy(product => product.ActualPrice);
+
 				case ProductOrderBy.ByPriceHigestFirst:
 					return products.OrderByDescending(product => product.ActualPrice);
 

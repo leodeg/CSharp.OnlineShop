@@ -46,7 +46,7 @@ namespace OnlineShop.Services.ProductServices.QueryExtensions
 
 		public static IQueryable<ProductListDto> ProductFilterByPrice (this IQueryable<ProductListDto> products, double min = 0, double max = 0)
 		{
-			if (max == 0)
+			if (min == 0 && max == 0)
 				return products;
 
 			return products.Where(p => p.ActualPrice >= min && p.ActualPrice <= max);

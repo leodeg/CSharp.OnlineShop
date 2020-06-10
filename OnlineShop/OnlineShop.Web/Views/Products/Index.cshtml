@@ -84,10 +84,10 @@
 				<div paging-information="@Model.PagingInformation" page-action="Index" ul-classes="justify-content-center" class="mx-auto mb-5"></div>
 
 				@* ======= Products List ======= *@
-				<div class="row mx-4">
-					@* ======= Product ======= *@
-					@if (Model.Options.Products.Any())
-					{
+				@if (Model.Options.Products.Any())
+				{
+					<div class="row mx-4">
+						@* ======= Product ======= *@
 						@foreach (var product in Model.Options.Products)
 						{
 							<div class="col-md-3">
@@ -102,17 +102,25 @@
 											<a href="#" class="btn btn-primary">Show more</a>
 										</p>
 									</div>
+									<div class="card-footer">
+										<form class="form-inline align-items-end">
+											
+										</form>
+									</div>
 								</div>
 							</div>
 						}
-					}
-					else
-					{
-						<h1 class="text-center">No Products Found</h1>
-					}
-
-				</div>
-
+					</div>
+				}
+				else
+				{
+					<div class="jumbotron jumbotron-fluid">
+						<div class="container text-center">
+							<h1 class="display-4"><i class="far fa-frown"></i> Sorry...</h1>
+							<p class="lead">We can't find products with such filters.</p>
+						</div>
+					</div>
+				}
 				<!-- ======= Pagination ======= -->
 				<div paging-information="@Model.PagingInformation" page-action="Index" ul-classes="justify-content-center" class="mx-auto mt-5"></div>
 			</div>

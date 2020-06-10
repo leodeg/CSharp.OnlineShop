@@ -20,11 +20,17 @@ namespace OnlineShop.Data.Repositories
 			return dbSet.AsNoTracking().Include(e => e.Subcategories);
 		}
 
-		public void AddSubcategory (int id, Subcategory subcategory)
+		private Category GetCategory(int id)
 		{
 			var category = dbSet.SingleOrDefault(e => e.Id == id);
 			if (category == null)
 				throw new InvalidOperationException($"Can't find category with {id} id");
+			return category;
+		}
+
+		public void AddSubcategory (int id, Subcategory subcategory)
+		{
+			Category category = GetCategory(id);
 			category.Subcategories.Add(subcategory);
 		}
 
@@ -32,11 +38,7 @@ namespace OnlineShop.Data.Repositories
 		{
 			if (entity == null)
 				throw new ArgumentNullException();
-
-			Category category = dbSet.FirstOrDefault(e => e.Id == id);
-			if (category == null)
-				throw new InvalidOperationException($"Can't find category with {id} id");
-
+			Category category = GetCategory(id);
 			category.Title = entity.Title;
 		}
 

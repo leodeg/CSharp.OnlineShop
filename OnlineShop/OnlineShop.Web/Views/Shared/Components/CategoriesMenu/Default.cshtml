@@ -3,6 +3,9 @@
 @if (Model.Any())
 {
 	<ul class="list-group list-group-flush">
+		<li class="list-group-item">
+			<a asp-action="Index" asp-route-subcategoryId="0">Show All</a>
+		</li>
 		@foreach (var category in Model)
 		{
 			<li class="list-group-item">
@@ -10,7 +13,7 @@
 			</li>
 			if (category.Subcategories.Any())
 			{
-				<li class="list-group-item ml-1">
+				<li class="list-group-item ml-	1">
 					<ul class="list-group list-group-flush">
 						@foreach (var subcategory in category.Subcategories)
 						{

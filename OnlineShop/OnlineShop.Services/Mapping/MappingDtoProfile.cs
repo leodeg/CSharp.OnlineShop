@@ -4,6 +4,7 @@ using System.Text;
 using AutoMapper;
 using OnlineShop.Data.Models;
 using OnlineShop.Services.Dtos;
+using OnlineShop.Services.OrderServices;
 
 namespace OnlineShop.Services.Mapping
 {
@@ -13,6 +14,7 @@ namespace OnlineShop.Services.Mapping
 		{
 			CreateMap<Product, ProductInfoDto>().ReverseMap();
 			CreateMap<Promotion, PromotionDto>().ReverseMap();
+			CreateMap<OrderItem, ShoppingCartItemDto>().ReverseMap();
 		}
 	}
 }

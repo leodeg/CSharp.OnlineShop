@@ -19,6 +19,8 @@ using AutoMapper;
 using OnlineShop.Services.Mapping;
 using OnlineShop.Services.FileServices;
 using OnlineShop.Services.ProductServices;
+using OnlineShop.Services.OrderServices;
+using Microsoft.AspNetCore.Http;
 
 namespace OnlineShop.Web
 {
@@ -41,6 +43,10 @@ namespace OnlineShop.Web
 
 			services.AddSingleton<IImageService>(new ImageService(Configuration.GetSection("Path").GetSection("Images").Value, new ImageManager()));
 
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+			services.AddScoped<ShoppingCart>(cart => ShoppingCart.GetCart(cart));
+
+			services.AddSession();
 			services.AddControllersWithViews();
 			services.AddRazorPages();
 			services.AddRouting(options => options.LowercaseUrls = true);
@@ -76,6 +82,8 @@ namespace OnlineShop.Web
 			services.AddTransient<ISubcategoryRepository, SubcategoryRepository>();
 			services.AddTransient<IProductRepository, ProductRepository>();
 			services.AddTransient<IListProductsService, ListProductsService>();
+			services.AddTransient<IOrderRepository, OrderRepository>();
+			services.AddTransient<ICustomerRepository, CustomerRepository>();
 		}
 
 		private static void AssignServices(IServiceCollection services)
@@ -83,7 +91,7 @@ namespace OnlineShop.Web
 			services.AddTransient<ICategoriesService, CategoriesService>();
 			services.AddTransient<ISubcategoriesService, SubcategoriesService>();
 			services.AddTransient<IProductsService, ProductsService>();
-
+			services.AddTransient<IOrderService, OrderService>();
 		}
 
 
@@ -105,6 +113,7 @@ namespace OnlineShop.Web
 			app.UseStaticFiles();
 
 			app.UseRouting();
+			app.UseSession();
 
 			app.UseAuthentication();
 			app.UseAuthorization();

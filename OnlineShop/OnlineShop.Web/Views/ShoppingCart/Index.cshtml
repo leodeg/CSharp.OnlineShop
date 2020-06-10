@@ -1,0 +1,45 @@
+﻿@model OnlineShop.Web.Models.ViewModels.ShoppingCartIndexVM
+
+@{
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_BaseLayout.cshtml";
+}
+
+<h1 class="text-center">Shopping Cart</h1>
+<hr />
+
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<th>Image</th>
+			<th>Title</th>
+			<th>Price</th>
+			<th>Quantity</th>
+			<th>TotalPrice</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model.Items)
+		{
+			<tr>
+				<td><img class="card-img-top" src="@Context.Request.PathBase/content/images/@item.ImageUrl"></td>
+				<td>item.Title</td>
+				<td>item.Price</td>
+				<td>item.Quantity</td>
+				<td>item.TotalPrice</td>
+				<td>
+					<a asp-action="RemoveItem" class="btn btn-danger">Delete</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="3" class="text-right">Total:</td>
+			<td class="text-right">
+				@Model.TotalPrice.ToString("c")
+			</td>
+		</tr>
+	</tfoot>
+</table>

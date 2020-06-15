@@ -49,10 +49,17 @@ namespace OnlineShop.Web.Controllers
 			ShoppingCartIndexVM vm = new ShoppingCartIndexVM()
 			{
 				Items = items,
-				TotalPrice = items.Sum(e => e.TotalPrice)
+				TotalPrice = items.Sum(e => e.TotalPrice),
+				Count = items.Count()
 			};
 
 			return View(vm);
+		}
+
+		public IActionResult AddItem(int productId, int quantity, double price, string redirectUrl)
+		{
+			shoppingCart.Add(productId, quantity, price);
+			return Redirect(redirectUrl);
 		}
 
 		public IActionResult RemoveItem(int? id)

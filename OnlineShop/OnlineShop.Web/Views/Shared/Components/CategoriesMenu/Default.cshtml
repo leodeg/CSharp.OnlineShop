@@ -4,7 +4,7 @@
 {
 	<ul class="list-group list-group-flush">
 		<li class="list-group-item">
-			<a asp-action="Index" asp-route-subcategoryId="0">Show All</a>
+			<a href="#" onclick="updateSubcategoryid(0)">Show All</a>
 		</li>
 		@foreach (var category in Model)
 		{
@@ -18,7 +18,7 @@
 						@foreach (var subcategory in category.Subcategories)
 						{
 							<li class="list-group-item small">
-								<a asp-action="Index" asp-route-subcategoryId="@subcategory.Id">@subcategory.Title</a>
+								<a href="#" name="SubcategoryId" onclick="updateSubcategoryid(@subcategory.Id)">@subcategory.Title</a>
 							</li>
 						}
 					</ul>

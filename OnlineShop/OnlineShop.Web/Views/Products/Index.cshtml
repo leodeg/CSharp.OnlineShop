@@ -1,72 +1,77 @@
-﻿@model OnlineShop.Web.Models.ViewModels.ProductIndexVM
+﻿@using Microsoft.AspNetCore.Http.Extensions
+@model OnlineShop.Web.Models.ViewModels.ProductIndexVM
 
 @{
 	ViewData["Title"] = "Index";
 	Layout = "~/Views/Shared/_BaseLayout.cshtml";
 }
 
-<div class="container my-4">
-	@* ======= Search Input ======= *@
-	<form>
-		<div class="row justify-content-center">
-			<input asp-for="@Model.Options.Options.SearchText" name="SearchText" class="form-control col-md-10" placeholder="Search by title and description">
-			<button type="submit" class="btn btn-primary col-md-1 ml-2">Search</button>
-		</div>
-	</form>
-</div>
-
 <div class="mb-5">
-	<form class="form-inline justify-content-center align-items-end">
-
-		@* ======= Sort By ======= *@
-		<div class="form-group mx-2">
-			<div>
-				<label class="control-label">Sort By</label>
-				<select asp-for="@Model.Options.Options.OrderBy" name="OrderBy"
-						asp-items="Html.GetEnumSelectList<OnlineShop.Services.ProductServices.QueryExtensions.ProductOrderBy>()"
-						class="form-control"></select>
+	<form id="options-form">
+		@* ======= Search ======= *@
+		<div class="container my-4">
+			<div class="row justify-content-center">
+				<input asp-for="@Model.Options.Options.SearchText" name="SearchText" class="form-control col-md-10" placeholder="Search by title and description">
+				<button type="submit" class="btn btn-primary col-md-1 ml-2" onclick="sendForm()">Search</button>
 			</div>
 		</div>
 
-		@* ======= Filter By ======= *@
-		<div class="form-group mx-2">
-			<div>
-				<label class="control-label">Filter By</label>
-				<select asp-for="@Model.Options.Options.FilterBy" name="FilterBy"
-						asp-items="Html.GetEnumSelectList<OnlineShop.Services.ProductServices.QueryExtensions.ProductFilterBy>()"
-						class="form-control"></select>
+		<div class="form-inline justify-content-center align-items-end">
+			@* ======= Sort By ======= *@
+			<div class="form-group mx-2">
+				<div>
+					<label class="control-label">Sort By</label>
+					<select asp-for="@Model.Options.Options.OrderBy" name="OrderBy"
+							asp-items="Html.GetEnumSelectList<OnlineShop.Services.ProductServices.QueryExtensions.ProductOrderBy>()"
+							onchange="sendForm()"
+							class="form-control"></select>
+				</div>
 			</div>
-		</div>
 
-		@* ======= Min Price ======= *@
-		<div class="form-group mx-2">
-			<div>
-				<label class="control-label">Min price</label>
-				<input asp-for="@Model.Options.Options.MinPrice" name="MinPrice" class="form-control">
+			@* ======= Filter By ======= *@
+			<div class="form-group mx-2">
+				<div>
+					<label class="control-label">Filter By</label>
+					<select asp-for="@Model.Options.Options.FilterBy" name="FilterBy"
+							asp-items="Html.GetEnumSelectList<OnlineShop.Services.ProductServices.QueryExtensions.ProductFilterBy>()"
+							onchange="sendForm()"
+							class="form-control"></select>
+				</div>
 			</div>
-		</div>
 
-		@* ======= Max Price ======= *@
-		<div class="form-group row mx-2">
-			<div>
-				<label class="control-label">Max price</label>
-				<input asp-for="@Model.Options.Options.MaxPrice" name="MaxPrice" class="form-control">
+			@* ======= Min Price ======= *@
+			<div class="form-group mx-2">
+				<div>
+					<label class="control-label">Min price</label>
+					<input asp-for="@Model.Options.Options.MinPrice" name="MinPrice" onchange="sendForm()" class="form-control" >
+
+				</div>
 			</div>
-		</div>
 
-		@* ======= Page size ======= *@
-		<div class="form-group mx-2">
-			<div>
-				<label class="control-label">Page&nbsp;Size</label>
-				<select asp-for="@Model.Options.Options.PageSize" name="PageSize"
-						asp-items="Model.Options.Options.PageSizes.Select(x => new SelectListItem {Text = x.ToString(), Value = x.ToString()})"
-						class="form-control"></select>
+			@* ======= Max Price ======= *@
+			<div class="form-group row mx-2">
+				<div>
+					<label class="control-label">Max price</label>
+					<input asp-for="@Model.Options.Options.MaxPrice" name="MaxPrice" onchange="sendForm()" class="form-control">
+				</div>
 			</div>
-		</div>
 
-		<input id="CurrentPage" name="CurrentPage" type="hidden" value=@Model.Options.Options.CurrentPage>
-		<input id="PreviousState" name="PreviousState" type="hidden" value=@Model.Options.Options.PreviousState>
-		<button type="submit" class="btn btn-primary">Update</button>
+			@* ======= Page size ======= *@
+			<div class="form-group mx-2">
+				<div>
+					<label class="control-label">Page&nbsp;Size</label>
+					<select asp-for="@Model.Options.Options.PageSize" name="PageSize"
+							asp-items="Model.Options.Options.PageSizes.Select(x => new SelectListItem {Text = x.ToString(), Value = x.ToString()})"
+							onchange="sendForm()"
+							class="form-control"></select>
+				</div>
+			</div>
+
+			<input id="CurrentPage" name="CurrentPage" type="hidden" value=@Model.Options.Options.CurrentPage>
+			<input id="SubcategoryId" name="SubcategoryId" type="hidden" value=@Model.Options.Options.SubcategoryId>
+			<input id="PreviousState" name="PreviousState" type="hidden" value=@Model.Options.Options.PreviousState>
+			<button type="submit" class="btn btn-primary">Update</button>
+		</div>
 	</form>
 </div>
 
@@ -81,7 +86,12 @@
 		<div class="col-md-10">
 			<div class="container">
 				<!-- ======= Pagination ======= -->
-				<div paging-information="@Model.PagingInformation" page-action="Index" ul-classes="justify-content-center" class="mx-auto mb-5"></div>
+				<div paging-information="@Model.PagingInformation" 
+					page-action="Index" 
+					ul-classes="justify-content-center"
+					on-click-method="updateCurrentPage" 
+					name="CurrentPage" 
+					class="mx-auto mb-5"></div>
 
 				@* ======= Products List ======= *@
 				@if (Model.Options.Products.Any())
@@ -90,7 +100,7 @@
 						@* ======= Product ======= *@
 						@foreach (var product in Model.Options.Products)
 						{
-							<div class="col-md-3">
+							<div class="col-md-3 mb-3">
 								<div class="card">
 									@*<img class="card-img-top" src="@Context.Request.PathBase/content/images/@product.ImageUrl">*@
 
@@ -103,8 +113,14 @@
 										</p>
 									</div>
 									<div class="card-footer">
-										<form class="form-inline align-items-end">
-											
+										<form asp-controller="ShoppingCart" asp-action="AddItem" class="align-items-end">
+											<div class="row">
+												<input type="hidden" value="@product.Id" name="productId" />
+												<input type="hidden" value="@product.Price" name="price" />
+												<input type="hidden" value="@Context.Request.GetDisplayUrl()" name="redirectUrl" />
+												<input type="number" placeholder="Quantity" name="quantity" class="form-control col-md-12" required />
+												<button type="submit" class="btn btn-primary btn-block mt-2">Add to cart</button>
+											</div>
 										</form>
 									</div>
 								</div>
@@ -122,9 +138,34 @@
 					</div>
 				}
 				<!-- ======= Pagination ======= -->
-				<div paging-information="@Model.PagingInformation" page-action="Index" ul-classes="justify-content-center" class="mx-auto mt-5"></div>
+				<div paging-information="@Model.PagingInformation" 
+					page-action="Index" 
+					ul-classes="justify-content-center" 
+					on-click-method="updateCurrentPage" 
+					name="CurrentPage" 
+					class="mx-auto mt-5"></div>
 			</div>
 		</div>
 	</div>
 </div>
+
+@section Scripts {
+
+	<script>
+		function sendForm() {
+			var form = $("#options-form");
+			form.submit();
+		}
+
+		function updateCurrentPage(value) {
+			$("#CurrentPage").val(value);
+			sendForm();
+		}
+
+		function updateSubcategoryid(value) {
+			$("#SubcategoryId").val(value);
+			sendForm();
+		}
+	</script>
+}
 

@@ -26,13 +26,9 @@ namespace OnlineShop.Web.Controllers
 			this.productsService = productsService;
 		}
 
-		public async Task<IActionResult> Index(ProductFilterPageOptions options, int? subcategoryId, int? pageNumber)
+		public async Task<IActionResult> Index(ProductFilterPageOptions options)
 		{
-			if (subcategoryId != null)
-				options.SubcategoryId = subcategoryId.Value;
-
-			if (pageNumber != null)
-				options.CurrentPage = pageNumber.Value;
+			if (options == null) return BadRequest();
 
 			IEnumerable<ProductListDto> products = await productsService.SortFilterPage(options).ToListAsync();
 

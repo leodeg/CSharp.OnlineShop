@@ -23,6 +23,9 @@ namespace OnlineShop.TagHelpers
 		public PagingInformation PagingInformation { get; set; }
 		public string PageAction { get; set; }
 		public string UlClasses { get; set; }
+		public string OnClickMethod { get; set; }
+		public string Name { get; set; }
+
 
 		public override void Process(TagHelperContext context, TagHelperOutput output)
 		{
@@ -66,16 +69,27 @@ namespace OnlineShop.TagHelpers
 				// TODO: create a more elegant solution for pagination
 				// Left pagination links (before current page)
 				if (PagingInformation.CurrentPage <= 3)
+				{
 					CreatePagination(tag, urlHelper, 1, 3);
-				else  CreatePagination(tag, urlHelper, PagingInformation.CurrentPage - 3, PagingInformation.CurrentPage);
+				}
+				else
+				{
+					CreatePagination(tag, urlHelper, PagingInformation.CurrentPage - 3, PagingInformation.CurrentPage);
+				}
 
 				// Right pagination links (after current page)
 				if (PagingInformation.CurrentPage <= 3)
+				{
 					CreatePagination(tag, urlHelper, PagingInformation.TotalPages - 2, PagingInformation.TotalPages);
+				}
 				else if (leftPages > 0 && leftPages <= 2)
+				{
 					CreatePagination(tag, urlHelper, PagingInformation.CurrentPage + 1, PagingInformation.CurrentPage + leftPages);
+				}
 				else if (leftPages > 0)
+				{
 					CreatePagination(tag, urlHelper, PagingInformation.CurrentPage + 1, PagingInformation.CurrentPage + 3);
+				}
 			}
 		}
 
@@ -91,18 +105,19 @@ namespace OnlineShop.TagHelpers
 		private TagBuilder CreateTag(int pageNumber, IUrlHelper urlHelper, string title = null)
 		{
 			TagBuilder item = new TagBuilder("li");
-			TagBuilder link = new TagBuilder("a");
+			TagBuilder button = new TagBuilder("button");
 
 			if (pageNumber == this.PagingInformation.CurrentPage)
 				item.AddCssClass("active");
-			else
-				link.Attributes["href"] = urlHelper.Action(PageAction, new { page = pageNumber });
-
 			item.AddCssClass("page-item");
-			link.AddCssClass("page-link");
 
-			link.InnerHtml.Append(title ?? pageNumber.ToString());
-			item.InnerHtml.AppendHtml(link);
+			button.AddCssClass("page-link");
+			button.Attributes["name"] = Name;
+			button.Attributes["onclick"] = OnClickMethod + "(" + pageNumber.ToString() + ")";
+			button.Attributes["value"] = pageNumber.ToString();
+
+			button.InnerHtml.Append(title ?? pageNumber.ToString());
+			item.InnerHtml.AppendHtml(button);
 			return item;
 		}
 	}

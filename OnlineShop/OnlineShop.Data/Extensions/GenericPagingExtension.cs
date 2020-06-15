@@ -9,6 +9,9 @@ namespace OnlineShop.Data.Extensions
 	{
 		public static IQueryable<T> Page<T>(this IQueryable<T> query, int currentPage, int elementsOnPage)
 		{
+			if (query == null || query.Count() < 1)
+				return query;
+
 			if (elementsOnPage == 0)
 				throw new ArgumentOutOfRangeException (nameof(elementsOnPage), "pageSize cannot be zero.");
 

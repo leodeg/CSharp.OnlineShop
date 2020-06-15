@@ -21,7 +21,7 @@ namespace OnlineShop.Web.Controllers.Api
 		}
 
 		[HttpPost]
-		public IActionResult Post(int productId, int quantity, double price)
+		public IActionResult Post([FromForm] int productId, [FromForm] int quantity, [FromForm] double price)
 		{
 			shoppingCart.Add(productId, quantity, price);
 			return Ok();

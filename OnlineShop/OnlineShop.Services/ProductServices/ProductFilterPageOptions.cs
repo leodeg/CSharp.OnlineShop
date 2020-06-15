@@ -56,7 +56,7 @@ namespace OnlineShop.Services.ProductServices
 		/// </summary>
 		private string GenerateCheckState()
 		{
-			return $"{(int)FilterBy},{MinPrice},{MaxPrice},{PageSize},{PagesCount},{SearchText}";
+			return $"{(int)FilterBy},{MinPrice},{MaxPrice},{SearchText}";
 		}
 	}
 }

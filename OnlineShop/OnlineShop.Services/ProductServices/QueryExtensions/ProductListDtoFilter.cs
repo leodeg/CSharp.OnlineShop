@@ -38,6 +38,9 @@ namespace OnlineShop.Services.ProductServices.QueryExtensions
 
 		public static IQueryable<ProductListDto> ProductFilterBySubcategory(this IQueryable<ProductListDto> products, int subcategoryId = 0)
 		{
+			if (products.Count() < 1)
+				return products;
+
 			if (subcategoryId == 0)
 				return products;
 
@@ -46,6 +49,9 @@ namespace OnlineShop.Services.ProductServices.QueryExtensions
 
 		public static IQueryable<ProductListDto> ProductFilterByPrice (this IQueryable<ProductListDto> products, double min = 0, double max = 0)
 		{
+			if (products.Count() < 1) 
+				return products;
+
 			if (min == 0 && max == 0)
 				return products;
 
@@ -54,6 +60,9 @@ namespace OnlineShop.Services.ProductServices.QueryExtensions
 
 		public static IQueryable<ProductListDto> ProductFilterBySearchText(this IQueryable<ProductListDto> products, string searchText)
 		{
+			if (products.Count() < 1)
+				return products;
+
 			if (string.IsNullOrEmpty(searchText))
 				return products;
 

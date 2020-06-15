@@ -10,5 +10,6 @@ namespace OnlineShop.Web.Models.ViewModels
 	{
 		public IEnumerable<ShoppingCartItemIndexVM> Items { get; set; }
 		public double TotalPrice { get; set; }
+		public int Count { get; set; }
 	}
 }

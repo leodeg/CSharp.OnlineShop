@@ -20,6 +20,9 @@ namespace OnlineShop.Services.ProductServices.QueryExtensions
 	{
 		public static IQueryable<ProductListDto> OrderProductsBy(this IQueryable<ProductListDto> products, ProductOrderBy orderBy)
 		{
+			if (products == null || products.Count() < 1)
+				return products;
+
 			switch (orderBy)
 			{
 				case ProductOrderBy.Default:

@@ -10,115 +10,120 @@ namespace OnlineShop.TagHelpers
 	[HtmlTargetElement("div", Attributes = "paging-information")]
 	public class PaginationTagHelper : TagHelper
 	{
-		private IUrlHelperFactory urlHelperFactory;
-
-		public PaginationTagHelper(IUrlHelperFactory helperFactory)
-		{
-			urlHelperFactory = helperFactory;
-		}
-
-		[ViewContext]
-		[HtmlAttributeNotBound]
-		public ViewContext ViewContext { get; set; }
 		public PagingInformation PagingInformation { get; set; }
+
 		public string PageAction { get; set; }
 		public string UlClasses { get; set; }
 		public string OnClickMethod { get; set; }
 		public string Name { get; set; }
 
+		private const int PageItemsAmount = 6;
+		private int MiddlePage => PageItemsAmount / 2;
 
 		public override void Process(TagHelperContext context, TagHelperOutput output)
 		{
-			IUrlHelper urlHelper = urlHelperFactory.GetUrlHelper(ViewContext);
-			output.TagName = "div";
+			CreatePaginationUlList(output);
+		}
 
+		private void CreatePaginationUlList(TagHelperOutput output)
+		{
+			output.TagName = "div";
 			TagBuilder tag = new TagBuilder("ul");
 			tag.AddCssClass("pagination " + UlClasses);
 
-			if (PagingInformation.HasPreviousPage)
-			{
-				TagBuilder previousPage = CreateTag(PagingInformation.CurrentPage - 1, urlHelper, "Previous");
-				TagBuilder firstPage = CreateTag(1, urlHelper, "First Page");
-				tag.InnerHtml.AppendHtml(firstPage);
-				tag.InnerHtml.AppendHtml(previousPage);
-			}
-
-			CreateMiddlePages(urlHelper, tag);
-
-			if (PagingInformation.HasNextPage)
-			{
-				TagBuilder nextPage = CreateTag(PagingInformation.CurrentPage + 1, urlHelper, "Next");
-				TagBuilder lastPage = CreateTag(PagingInformation.TotalPages, urlHelper, "Last Page");
-				tag.InnerHtml.AppendHtml(nextPage);
-				tag.InnerHtml.AppendHtml(lastPage);
-			}
+			CreatePreviousPaginationItems(tag);
+			CreateMiddlePaginationItems(tag);
+			CreateNextPaginationItems(tag);
 
 			output.Content.AppendHtml(tag);
 		}
 
-		private void CreateMiddlePages(IUrlHelper urlHelper, TagBuilder tag)
+		private void CreatePreviousPaginationItems(TagBuilder tag)
 		{
-			if (PagingInformation.TotalPages <= 6)
+			if (PagingInformation.HasPreviousPage)
 			{
-				CreatePagination(tag, urlHelper, 1, PagingInformation.TotalPages);
-			}
-			else if (PagingInformation.TotalPages > 6)
-			{
-				int leftPages = PagingInformation.TotalPages - PagingInformation.CurrentPage;
-
-				// TODO: create a more elegant solution for pagination
-				// Left pagination links (before current page)
-				if (PagingInformation.CurrentPage <= 3)
-				{
-					CreatePagination(tag, urlHelper, 1, 3);
-				}
-				else
-				{
-					CreatePagination(tag, urlHelper, PagingInformation.CurrentPage - 3, PagingInformation.CurrentPage);
-				}
-
-				// Right pagination links (after current page)
-				if (PagingInformation.CurrentPage <= 3)
-				{
-					CreatePagination(tag, urlHelper, PagingInformation.TotalPages - 2, PagingInformation.TotalPages);
-				}
-				else if (leftPages > 0 && leftPages <= 2)
-				{
-					CreatePagination(tag, urlHelper, PagingInformation.CurrentPage + 1, PagingInformation.CurrentPage + leftPages);
-				}
-				else if (leftPages > 0)
-				{
-					CreatePagination(tag, urlHelper, PagingInformation.CurrentPage + 1, PagingInformation.CurrentPage + 3);
-				}
+				TagBuilder firstPage = CreatePaginationItem(1, "First Page");
+				tag.InnerHtml.AppendHtml(firstPage);
+				TagBuilder previousPage = CreatePaginationItem(PagingInformation.CurrentPage - 1, "Previous");
+				tag.InnerHtml.AppendHtml(previousPage);
 			}
 		}
 
-		private void CreatePagination(TagBuilder tag, IUrlHelper urlHelper, int start, int end)
+		private void CreateNextPaginationItems(TagBuilder tag)
 		{
-			for (int i = start; i <= end; i++)
+			if (PagingInformation.HasNextPage)
 			{
-				TagBuilder current = CreateTag(i, urlHelper);
-				tag.InnerHtml.AppendHtml(current);
+				TagBuilder nextPage = CreatePaginationItem(PagingInformation.CurrentPage + 1, "Next");
+				tag.InnerHtml.AppendHtml(nextPage);
+				TagBuilder lastPage = CreatePaginationItem(PagingInformation.TotalPages, "Last Page");
+				tag.InnerHtml.AppendHtml(lastPage);
 			}
 		}
 
-		private TagBuilder CreateTag(int pageNumber, IUrlHelper urlHelper, string title = null)
+		private void CreateMiddlePaginationItems(TagBuilder parentTag)
 		{
-			TagBuilder item = new TagBuilder("li");
-			TagBuilder button = new TagBuilder("button");
+			if (PagingInformation.TotalPages <= PageItemsAmount)
+			{
+				CreatePaginationItems(parentTag, 1, PagingInformation.TotalPages);
+			}
+			else if (PagingInformation.TotalPages > PageItemsAmount)
+			{
+				CreateLeftFromActivePage(parentTag);
+				CreateRightFromActivePage(parentTag);
+			}
+		}
 
+		private void CreateLeftFromActivePage(TagBuilder parentTag)
+		{
+			if (PagingInformation.CurrentPage <= MiddlePage)
+				CreatePaginationItems(parentTag, 1, MiddlePage);
+			else CreatePaginationItems(parentTag, PagingInformation.CurrentPage - MiddlePage, PagingInformation.CurrentPage);
+		}
+
+		private void CreateRightFromActivePage(TagBuilder parentTag)
+		{
+			int remainingPages = PagingInformation.TotalPages - PagingInformation.CurrentPage;
+
+			if (PagingInformation.CurrentPage <= MiddlePage)
+				CreatePaginationItems(parentTag, PagingInformation.TotalPages - (MiddlePage - 1), PagingInformation.TotalPages);
+			else if (remainingPages > 0 && remainingPages <= (MiddlePage - 1))
+				CreatePaginationItems(parentTag, PagingInformation.CurrentPage + 1, PagingInformation.CurrentPage + remainingPages);
+			else if (remainingPages > 0)
+				CreatePaginationItems(parentTag, PagingInformation.CurrentPage + 1, PagingInformation.CurrentPage + MiddlePage);
+		}
+
+		private void CreatePaginationItems(TagBuilder parentTag, int startPage, int endPage)
+		{
+			for (int pageNumber = startPage; pageNumber <= endPage; pageNumber++)
+			{
+				TagBuilder current = CreatePaginationItem(pageNumber);
+				parentTag.InnerHtml.AppendHtml(current);
+			}
+		}
+
+		private TagBuilder CreatePaginationItem(int pageNumber, string buttonTitle = null)
+		{
+			TagBuilder paginationItem = new TagBuilder("li");
 			if (pageNumber == this.PagingInformation.CurrentPage)
-				item.AddCssClass("active");
-			item.AddCssClass("page-item");
+				paginationItem.AddCssClass("active");
+			paginationItem.AddCssClass("page-item");
+			paginationItem.InnerHtml.AppendHtml(CreatePageLinkButton(pageNumber, buttonTitle));
+			return paginationItem;
+		}
 
+		private TagBuilder CreatePageLinkButton(int pageNumber, string title)
+		{
+			TagBuilder button = new TagBuilder("button");
 			button.AddCssClass("page-link");
-			button.Attributes["name"] = Name;
-			button.Attributes["onclick"] = OnClickMethod + "(" + pageNumber.ToString() + ")";
 			button.Attributes["value"] = pageNumber.ToString();
 
+			if (!string.IsNullOrEmpty(Name))
+				button.Attributes["name"] = Name;
+
+			if (!string.IsNullOrEmpty(OnClickMethod))
+				button.Attributes["onclick"] = OnClickMethod + "(" + pageNumber.ToString() + ")";
 			button.InnerHtml.Append(title ?? pageNumber.ToString());
-			item.InnerHtml.AppendHtml(button);
-			return item;
+			return button;
 		}
 	}
 }

@@ -8,14 +8,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using OnlineShop.Data.Repositories;
 
-namespace OnlineShop.Services.OrderServices
+namespace OnlineShop.Services.ShoppingCart
 {
-	public class ShoppingCartItemDto
+	interface IShoppingCart
 	{
-		[Required]
-		public int ProductId { get; set; }
-		public double Price { get; set; }
-		public int Quantity { get; set; }
-		public double TotalPrice { get { return Price * Quantity; } }
+		void Add(int productId, int quantity, double price);
+		void Update(int productId, int newQuantity, int newPrice);
+		void Remove(int productId);
+		public void Clear();
+		public double GetTotalPrice();
 	}
 }

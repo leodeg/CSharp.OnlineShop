@@ -7,7 +7,6 @@ using OnlineShop.Data.Models;
 
 namespace OnlineShop.Data.Configurations
 {
-
 	internal class OrderItemConfig : IEntityTypeConfiguration<OrderItem>
 	{
 		public void Configure(EntityTypeBuilder<OrderItem> builder)

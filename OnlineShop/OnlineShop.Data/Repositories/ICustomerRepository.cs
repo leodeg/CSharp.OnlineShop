@@ -12,6 +12,7 @@ namespace OnlineShop.Data.Repositories
 
 	public interface ICustomerRepository : IRepository<Customer>
 	{
-
+		Customer GetByAddress(string address);
+		Customer GetCustomer(int id);
 	}
 }

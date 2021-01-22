@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Services.FileServices
 {
-
 	public class ImageService : IImageService
 	{
 		private string rootPath;

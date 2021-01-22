@@ -17,7 +17,6 @@ namespace OnlineShop.Data.Repositories
 
 		private Order GetOrder(int id)
 		{
-
 			Order order = dbSet.FirstOrDefault(e => e.Id == id);
 			if (order == null)
 				throw new InvalidOperationException($"Can't find order with {id} id");

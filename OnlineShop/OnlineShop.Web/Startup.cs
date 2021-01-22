@@ -44,8 +44,10 @@ namespace OnlineShop.Web
 			services.AddSingleton<IImageService>(new ImageService(Configuration.GetSection("Path").GetSection("Images").Value, new ImageManager()));
 
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-			services.AddScoped<ShoppingCart>(cart => ShoppingCart.GetCart(cart));
+			//services.AddScoped<ShoppingCart>(s => s.GetCart());
 
+			services.AddDistributedMemoryCache();
+			services.AddMvc();
 			services.AddSession();
 			services.AddControllersWithViews();
 			services.AddRazorPages();
@@ -55,21 +57,22 @@ namespace OnlineShop.Web
 		private void AssignDbContexts(IServiceCollection services)
 		{
 			services.AddDbContext<ApplicationDbContext>(options =>
-							options.UseSqlServer(
-								Configuration.GetConnectionString("DefaultConnection")));
+				options.UseSqlServer(
+					Configuration.GetConnectionString("DefaultConnection")));
 
 			services.AddDbContext<OnlineShop.Data.OnlineShopDbContext>(options =>
 				options.UseSqlServer(
 					Configuration.GetConnectionString("DefaultConnection")));
 
 			services.AddDefaultIdentity<IdentityUser>
-					(options => options.SignIn.RequireConfirmedAccount = true)
-				.AddEntityFrameworkStores<ApplicationDbContext>();
+				(options => options.SignIn.RequireConfirmedAccount = true)
+					.AddEntityFrameworkStores<ApplicationDbContext>();
 		}
 
 		private static void AssignAutoMapper(IServiceCollection services)
 		{
-			var mappingConfig = new MapperConfiguration(mc => {
+			var mappingConfig = new MapperConfiguration(mc =>
+			{
 				mc.AddProfile(new MappingDtoProfile());
 			});
 
@@ -118,7 +121,8 @@ namespace OnlineShop.Web
 			app.UseAuthentication();
 			app.UseAuthorization();
 
-			app.UseEndpoints(endpoints => {
+			app.UseEndpoints(endpoints =>
+			{
 				endpoints.MapControllerRoute(
 					name: "default",
 					pattern: "{controller=Home}/{action=Index}/{id?}");

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnlineShop.Data.Models;
 
 namespace OnlineShop.Data.Configurations
 {
-
 	internal class OrderConfig : IEntityTypeConfiguration<Order>
 	{
 		public void Configure(EntityTypeBuilder<Order> builder)

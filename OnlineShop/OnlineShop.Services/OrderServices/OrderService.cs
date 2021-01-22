@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using OnlineShop.Data.Models;
 using OnlineShop.Data.Repositories;
+using OnlineShop.Services.Dtos;
 
 namespace OnlineShop.Services.OrderServices
 {
@@ -16,11 +17,13 @@ namespace OnlineShop.Services.OrderServices
 	{
 		private readonly IMapper mapper;
 		private readonly IOrderRepository orderRepository;
+		private readonly ICustomerRepository customerRepository;
 
-		public OrderService(IMapper mapper, IOrderRepository orderRepository)
+		public OrderService(IMapper mapper, IOrderRepository orderRepository, ICustomerRepository customerRepository)
 		{
 			this.mapper = mapper;
 			this.orderRepository = orderRepository;
+			this.customerRepository = customerRepository;
 		}
 
 		public IEnumerable<Order> GetOrders()
@@ -32,14 +35,31 @@ namespace OnlineShop.Services.OrderServices
 		{
 			List<OrderItem> items = mapper.Map<List<OrderItem>>(orderItems);
 
-			Order order = new Order()
-			{
-				Customer = customer,
-				OrderItems = items,
-				TotalPrice = orderItems.Sum(products => products.TotalPrice),
-			};
+			Customer currentCustomer = customerRepository.GetByAddress(customer.PostAddress);
 
-			orderRepository.Create(order);
+			if (currentCustomer == default(Customer))
+			{
+				orderRepository.Create(new Order()
+				{
+					Customer = customer,
+					OrderItems = items,
+					TotalPrice = orderItems.Sum(products => products.TotalPrice),
+					IsProcessed = false,
+					ProcessedDate = DateTime.MinValue
+				});
+			}
+			else
+			{
+				orderRepository.Create(new Order()
+				{
+					CustomerId = currentCustomer.Id,
+					OrderItems = items,
+					TotalPrice = orderItems.Sum(products => products.TotalPrice),
+					IsProcessed = false,
+					ProcessedDate = DateTime.MinValue
+				});
+			}
+
 			orderRepository.SaveChanges();
 		}
 	}

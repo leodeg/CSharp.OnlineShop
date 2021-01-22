@@ -14,6 +14,8 @@ using OnlineShop.Services.AdminServices;
 using OnlineShop.Services.Dtos;
 using OnlineShop.Services.OrderServices;
 using OnlineShop.Services.ProductServices;
+using OnlineShop.Services.ShoppingCart;
+using OnlineShop.Web.Extensions;
 using OnlineShop.Web.Models.ViewModels;
 
 namespace OnlineShop.Web.Controllers
@@ -21,12 +23,12 @@ namespace OnlineShop.Web.Controllers
 	public class OrderController : Controller
 	{
 		private readonly IOrderService orderService;
-		private readonly ShoppingCart shoppingCart;
+		private readonly IServiceProvider service;
 
-		public OrderController(IOrderService orderService, ShoppingCart shoppingCart)
+		public OrderController(IOrderService orderService, IServiceProvider service)
 		{
 			this.orderService = orderService;
-			this.shoppingCart = shoppingCart;
+			this.service = service;
 		}
 
 		public IActionResult Checkout()
@@ -37,6 +39,8 @@ namespace OnlineShop.Web.Controllers
 		[HttpPost]
 		public IActionResult Checkout(Customer customer)
 		{
+			ShoppingCart shoppingCart = ShoppingCartController.GetCart(service);
+
 			if (shoppingCart.Items.Count == 0)
 				ModelState.AddModelError("", "Your cart is empty, add some pies first");
 
@@ -44,6 +48,8 @@ namespace OnlineShop.Web.Controllers
 			{
 				orderService.SaveOrder(customer, shoppingCart.Items);
 				shoppingCart.Clear();
+				ShoppingCartController.SaveCart(service, shoppingCart);
+
 				return RedirectToAction(nameof(CheckoutComplete));
 			}
 
@@ -52,8 +58,7 @@ namespace OnlineShop.Web.Controllers
 
 		public IActionResult CheckoutComplete()
 		{
-			ViewBag.CheckoutCompleteMessage = "Thanks for your order.";
-			return View();
+			return View(nameof(CheckoutComplete), "Your order was complete.");
 		}
 	}
 }

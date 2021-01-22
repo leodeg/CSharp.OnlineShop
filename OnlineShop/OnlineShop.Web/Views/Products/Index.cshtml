@@ -113,7 +113,7 @@
 										</p>
 									</div>
 									<div class="card-footer">
-										<form asp-controller="ShoppingCart" asp-action="AddItem" class="align-items-end">
+										<form asp-controller="ShoppingCart" asp-action="AddItem" method="post" class="align-items-end">
 											<div class="row">
 												<input type="hidden" value="@product.Id" name="productId" />
 												<input type="hidden" value="@product.Price" name="price" />

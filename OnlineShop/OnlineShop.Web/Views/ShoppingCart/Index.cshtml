@@ -24,13 +24,13 @@
 			@foreach (var item in Model.Items)
 			{
 				<tr>
-					<td><img class="card-img-top" src="@Context.Request.PathBase/content/images/@item.ImageUrl"></td>
-					<td>item.Title</td>
-					<td>item.Price</td>
-					<td>item.Quantity</td>
-					<td>item.TotalPrice</td>
+					<td><img class="card-img-top" src="@Context.Request.PathBase/content/images/@Url.Content(string.IsNullOrWhiteSpace(item.ImageUrl) ? "default.jpg" : item.ImageUrl)" style="width: 100px;"></td>
+					<td>@item.Title</td>
+					<td>@item.Price</td>
+					<td>@item.Quantity</td>
+					<td>@item.TotalPrice</td>
 					<td>
-						<a asp-action="RemoveItem" class="btn btn-danger">Delete</a>
+						<a asp-action="RemoveItem" asp-route-id="@item.ProductId" class="btn btn-danger">Delete</a>
 					</td>
 				</tr>
 			}
@@ -41,6 +41,10 @@
 				<td class="text-right">
 					@Model.TotalPrice.ToString("c")
 				</td>
+				@if(Model.Count > 0)
+				{
+					<td><a asp-controller="Order" asp-action="Checkout" class="btn btn-primary btn-block">Checkout</a></td>
+				}
 			</tr>
 		</tfoot>
 	</table>

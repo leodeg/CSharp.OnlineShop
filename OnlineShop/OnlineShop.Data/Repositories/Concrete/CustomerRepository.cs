@@ -17,12 +17,17 @@ namespace OnlineShop.Data.Repositories
 
 		}
 
-		private Customer GetCustomer (int id)
+		public Customer GetCustomer(int id)
 		{
 			Customer customer = dbSet.FirstOrDefault(e => e.Id == id);
 			if (customer == null)
 				throw new InvalidOperationException($"Can't find customer with {id} id");
 			return customer;
+		}
+
+		public Customer GetByAddress(string address)
+		{
+			return dbSet.AsNoTracking().SingleOrDefault(e => e.PostAddress == address);
 		}
 
 		public override void Update(int id, Customer entity)
